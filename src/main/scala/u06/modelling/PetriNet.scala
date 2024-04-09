@@ -2,6 +2,8 @@ package pc.modelling
 
 import pc.utils.MSet
 
+import scala.u06.task1.ReadersWritersPetriNet.Place
+
 object PetriNet:
   // pre-conditions, effects, inhibition
   case class Trn[P](cond: MSet[P], eff: MSet[P], inh: MSet[P])
