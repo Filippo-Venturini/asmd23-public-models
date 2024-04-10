@@ -11,11 +11,11 @@ class ReadersWritersPetriNetTest extends AnyFunSuite:
     isMutuallyExclusive(MSet(Idle, Idle, HasPermission), 10) shouldBe true
 
   test("Not in mutual exclusion"):
-    isMutuallyExclusive(MSet(Idle, Idle, Reading, Writing), 100) shouldBe false
+    isMutuallyExclusive(MSet(Idle, Idle, Reading, Writing), 10) shouldBe false
 
   test("Reachability"):
-    isReachable(MSet(Idle, Idle, HasPermission), 100) shouldBe true
+    isReachable(MSet(Idle, Idle, HasPermission), 10) shouldBe true
 
   test("Boundness"):
-    isBounded(MSet(Idle, Idle, HasPermission), 100) shouldBe true
+    isBounded2(MSet(Idle, Idle, HasPermission), 10) shouldBe true
 

@@ -3,6 +3,8 @@ package scala.u06.task1
 export pc.modelling.PetriNet
 import pc.utils.MSet
 
+import scala.collection.immutable.LazyList
+
 object ReadersWritersPetriNet:
   enum Place:
     case Idle, ChooseAction, ReadyToRead, ReadyToWrite, Reading, Writing, HasPermission
@@ -28,8 +30,17 @@ object ReadersWritersPetriNet:
         p <- pnRW.paths(initialState, depth)
         s <- p
       yield s.diff(MSet(Reading, Writing)).size == s.size - 2 || s.diff(MSet(Writing, Writing)).size == s.size - 2
-    //pnRW.paths(initialState, depth).flatMap(p => p.filter(s => s.diff(MSet(Reading, Writing)).size == s.size - 2 || s.diff(MSet(Writing, Writing)).size == s.size - 2)).isEmpty
+
     !statesMutualExclusion.contains(true)
+    /*val paths = pnRW.paths(initialState, depth)
+    !paths.exists { path =>
+      path.exists { state =>
+        val diffReadingWriting = state.diff(MSet(Reading, Writing)).size
+        val diffWritingWriting = state.diff(MSet(Writing, Writing)).size
+        diffReadingWriting == state.size - 2 || diffWritingWriting == state.size - 2
+      }
+    }*/
+    //pnRW.paths(initialState, depth).flatMap(p => p.filter(s => s.diff(MSet(Reading, Writing)).size == s.size - 2 || s.diff(MSet(Writing, Writing)).size == s.size - 2)).isEmpty
 
   def isReachable(initialState: MSet[Place], depth: Int): Boolean =
     val allReachedStates: Seq[Place] =
@@ -39,9 +50,7 @@ object ReadersWritersPetriNet:
         place <- state.asList
       yield place
 
-    val m1 = allReachedStates.toList.distinct
-    val m2 = Place.values.toSeq
-    m1 == m2
+    allReachedStates.toSet == Place.values.toSet
 
   def maxTokenInPN(initialState: MSet[Place]): Int =
     if initialState.matches(MSet(HasPermission)) then initialState.size else initialState.size + 1
@@ -60,7 +69,7 @@ object ReadersWritersPetriNet:
     (for
       path: Path[Marking[Place]] <- pnRW.paths(initialState, depth)
       state <- path
-    yield state.size <= maxTokenInPN(initialState)).reduce(_ & _)
+    yield state.size <= maxTokenInPN(initialState)).reduce(_ && _)
 
 
   @main def mainPNMutualExclusion =
