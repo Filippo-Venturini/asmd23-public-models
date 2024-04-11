@@ -2,7 +2,9 @@ package pc.modelling
 
 import pc.utils.MSet
 
-import scala.u06.task1.ReadersWritersPetriNet.Place
+import scala.collection.SortedSet
+import scala.collection.immutable.TreeSet
+import scala.u06.task1.ReadersWritersPetriNet.{Place, pnRWPriorities}
 
 object PetriNet:
   // pre-conditions, effects, inhibition, priority
@@ -13,16 +15,21 @@ object PetriNet:
   // factory of A Petri Net
   def apply[P](transitions: Trn[P]*): PetriNet[P] = transitions.toSet
 
+  implicit def trnOrdering[P]: Ordering[Trn[P]] = Ordering.by(-_.priority)
+  implicit def msetOrdering[P]: Ordering[MSet[P]] = Ordering.by(_.size)
+
   // factory of a System, as a toSystem method
   extension [P](pn: PetriNet[P])
     def toSystem: System[Marking[P]] = m =>
-      for
-        Trn(cond, eff, inh, priority) <- pn.sortByPriority// get any transition
-        if m disjoined inh          // check inhibition
-        out <- m extract cond       // remove precondition
-      yield out union eff           // add effect
+      val allTransitions =
+        for
+          Trn(cond, eff, inh, priority) <- pn   // get any transition
+          if m disjoined inh          // check inhibition
+          out <- m extract cond       // remove precondition
+        yield (priority, out union eff)
 
-    def sortByPriority: PetriNet[P] = pn.toList.sortBy(-_.priority).toSet
+      val maxPriority = allTransitions.map(_._1).max
+      allTransitions.filter((p, _) => p == maxPriority).map(_._2)
 
   // fancy syntax to create transition rules
   extension [P](self: Marking[P])

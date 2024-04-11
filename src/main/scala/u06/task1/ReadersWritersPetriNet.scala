@@ -24,6 +24,16 @@ object ReadersWritersPetriNet:
     MSet(Writing) ~~> MSet(Idle, HasPermission)
   ).toSystem
 
+  def pnRWPriorities = PetriNet[Place](
+    MSet(Idle) ~~> MSet(ChooseAction),
+    MSet(ChooseAction) ~~> MSet(ReadyToRead) priority 5,
+    MSet(ChooseAction) ~~> MSet(ReadyToWrite) priority 2,
+    MSet(ReadyToRead, HasPermission) ~~> MSet(Reading, HasPermission),
+    MSet(Reading) ~~> MSet(Idle),
+    MSet(ReadyToWrite, HasPermission) ~~> MSet(Writing) ^^^ MSet(Reading),
+    MSet(Writing) ~~> MSet(Idle, HasPermission)
+  ).toSystem
+
   def isMutuallyExclusive(initialState: MSet[Place], depth: Int): Boolean =
     val statesMutualExclusion: Seq[Boolean] =
       for
@@ -73,4 +83,5 @@ object ReadersWritersPetriNet:
 
 
   @main def mainPNMutualExclusion =
-  println(pnRW.paths(MSet(Idle, Idle, HasPermission), 3).toList.mkString("\n"))
+    println(pnRWPriorities.paths(MSet(Idle, ChooseAction, HasPermission),5).toList.mkString("\n"))
+    //println(pnRW.paths(MSet(Idle, Idle, HasPermission), 3).toList.mkString("\n"))
