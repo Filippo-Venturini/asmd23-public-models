@@ -34,14 +34,11 @@ The idea for verify the mutual exclusion property is the following:
   **Def:** Given all the possible paths of a given length, every state must be reached **at least one time**.
 ```
 def isReachable(initialState: MSet[Place], depth: Int): Boolean =
-    val allReachedStates: Seq[Place] =
-      for
-        path <- pnRW.paths(initialState, depth)
-        state <- path
-        place <- state.asList
-      yield place
-
-    allReachedStates.toSet == Place.values.toSet
+    (for
+      path <- pnRW.paths(initialState, depth)
+      state <- path
+      place <- state.asList
+    yield place).toSet == Place.values.toSet
 ```
 
 Also here the idea is to iterate all the paths and the states, but in this case we are accumulating all the places encountered. Then we convert the Sequence into a Set and we check that all the States are reached by using all the values present in the enumeration.
@@ -51,7 +48,7 @@ Also here the idea is to iterate all the paths and the states, but in this case 
 **Def:** Given all the possible path of a given length, the number of tokens in each place remains bounded, preventing resource exhaustion or overflow.
 
 ```
-def isBounded2(initialState: MSet[Place], depth: Int): Boolean =
+def isBounded(initialState: MSet[Place], depth: Int): Boolean =
     (for
       path: Path[Marking[Place]] <- pnRW.paths(initialState, depth)
       state <- path
@@ -59,3 +56,33 @@ def isBounded2(initialState: MSet[Place], depth: Int): Boolean =
 ```
 
 In this solution we iterate over all the states and we check that the total number of the token in each state is less equal than the maximum possible number of the tokens in the net. Note that this solution is correct only if we apply it to a Readers and Writers Petri Net, because we know that in this type of nets no more tokens are generated after the initial configuration, so we can know exactly the max possible amount of tokens (k + HasPermission)
+
+## Task 2 - Artist
+
+In this task the implementation of the Petri Net is extended by adding priority values to the transitions of the net.
+
+The code can be found at the path *scala.u06.modelling.PetriNet.scala*.
+
+Here the idea is to add to the Trn case class an Int field for the priority, with the default value at 1 for so if the user doesn't want to use priorities everything works as before.
+
+```
+case class Trn[P](cond: MSet[P], eff: MSet[P], inh: MSet[P], priority: Int = 1)
+```
+
+Then we have to modify the toSystem method for make it fire only the transitions with the highest priority.
+
+```
+def toSystem: System[Marking[P]] = m =>
+      val allTransitions =
+        for
+          Trn(cond, eff, inh, priority) <- pn   // get any transition
+          if m disjoined inh          // check inhibition
+          out <- m extract cond       // remove precondition
+        yield (priority, out union eff)
+
+      val maxPriority = allTransitions.map(_._1).max
+      allTransitions.filter((p, _) => p == maxPriority).map(_._2)
+```
+
+The idea here
+
