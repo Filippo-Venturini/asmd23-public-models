@@ -16,6 +16,6 @@ class ReadersWritersPetriNetTest extends AnyFunSuite:
   test("Reachability"):
     isReachable(MSet(Idle, Idle, HasPermission), 10) shouldBe true
 
-  test("Boundness"):
-    isBounded2(MSet(Idle, Idle, HasPermission), 10) shouldBe true
+  test("Boundedness"):
+    isBounded(MSet(Idle, Idle, HasPermission), 10) shouldBe true
 
