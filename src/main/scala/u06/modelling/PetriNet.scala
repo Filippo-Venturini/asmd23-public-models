@@ -7,6 +7,7 @@ import scala.collection.immutable.TreeSet
 import scala.u06.task1.ReadersWritersPetriNet.{Place, pnRWPriorities}
 
 object PetriNet:
+
   // pre-conditions, effects, inhibition, priority
   case class Trn[P](cond: MSet[P], eff: MSet[P], inh: MSet[P], priority: Int = 1)
   type PetriNet[P] = Set[Trn[P]]

@@ -35,13 +35,11 @@ object ReadersWritersPetriNet:
   ).toSystem
 
   def isMutuallyExclusive(initialState: MSet[Place], depth: Int): Boolean =
-    val statesMutualExclusion: Seq[Boolean] =
-      for
+    (for
         p <- pnRW.paths(initialState, depth)
         s <- p
-      yield s.diff(MSet(Reading, Writing)).size == s.size - 2 || s.diff(MSet(Writing, Writing)).size == s.size - 2
+      yield s.diff(MSet(Reading, Writing)).size != s.size - 2 && s.diff(MSet(Writing, Writing)).size != s.size - 2).reduce(_ && _)
 
-    !statesMutualExclusion.contains(true)
     /*val paths = pnRW.paths(initialState, depth)
     !paths.exists { path =>
       path.exists { state =>
