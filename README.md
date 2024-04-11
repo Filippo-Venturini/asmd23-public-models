@@ -61,9 +61,11 @@ At the path *package scala.u06.task1.ReadersWritersPetriNetTest.scala* a simple 
 
 ## Task 2 - Artist
 
-In this task the implementation of the Petri Net is extended by adding priority values to the transitions of the net.
+In this task the implementation of the Petri Net is extended by adding the concepts of priority and colors or the tokens and the transitions.
 
-The code can be found at the path *scala.u06.modelling.PetriNet.scala*.
+The code can be found at the path *scala.u06.modelling.ExtendedPetriNet.scala*.
+
+### Priorities
 
 Here the idea is to add to the Trn case class an Int field for the priority, with the default value at 1 for so if the user doesn't want to use priorities everything works as before.
 
@@ -88,4 +90,29 @@ def toSystem: System[Marking[P]] = m =>
 
 The idea here is to keep the same behaviour as before but extracting the all the priorities from the transitions. Then the max priority is found so the method can filter and keep only the transitions with the biggest priority. 
 
-Then of course a new operator is added to the DSL for enabling the using of the priority with the DSL's notation.
+Then of course a new operator is added to the DSL for enabling the using of the priority with the DSL's notation and a creation of a transition with a certain amount of priority looks like that:
+
+```
+MSet(*(ChooseAction)) ~~> MSet(*(ReadyToRead)) priority 5,
+```
+
+### Colors
+
+We want to extend the model of the Petri Net by adding the possibility to have colored tokens (eg: Black or Red) and each transition also can accept only tokens of a certain color and when fired change the color of the token that goes through.
+
+For do that an enum for colors is created and than a new case class represent the couple (place, color):
+
+```
+@targetName("Token")
+  case class *[P](place: P, color: Color = Color.Black)
+```
+
+Note that the default color is Black so we're still able to design an extended Petri Net just with priorities, without using colors.
+
+So now when we create a new PetriNet the istantiation of a transition looks like that:
+
+```
+MSet(*(Idle, Red)) ~~> MSet(*(ChooseAction, Red)),
+```
+
+This means that the transition goes from **Idle** place to **ChooseActionPlace**, accept only red tokens and the token keep being red. For change the color of the token is enough to change the color of the second *.
