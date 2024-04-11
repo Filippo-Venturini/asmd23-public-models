@@ -4,7 +4,7 @@ import scala.u06.modelling.ExtendedPetriNet
 import scala.u06.modelling.ExtendedPetriNet.Color.*
 import scala.u06.modelling.ExtendedPetriNet.*
 
-object ColoredRWPetriNets:
+object ExtendedRWPetriNets:
 
   enum Place:
     case Idle, ChooseAction, ReadyToRead, ReadyToWrite, Reading, Writing, HasPermission
@@ -34,5 +34,6 @@ object ColoredRWPetriNets:
     MSet(*(Writing, Black)) ~~> MSet(*(Idle, Black), *(HasPermission, Black))
   ).toSystem
 
-  @main def mainPNMutualExclusion =
+  @main def mainExtendedPN =
+    println(pnRWPriorities.paths(MSet(*(Idle), *(HasPermission)),5).toList.mkString("\n"))
     println(pnRWColored.paths(MSet(*(Idle, Red), *(HasPermission, Black)),5).toList.mkString("\n"))
