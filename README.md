@@ -84,5 +84,6 @@ def toSystem: System[Marking[P]] = m =>
       allTransitions.filter((p, _) => p == maxPriority).map(_._2)
 ```
 
-The idea here
+The idea here is to keep the same behaviour as before but extracting the all the priorities from the transitions. Then the max priority is found so the method can filter and keep only the transitions with the biggest priority. 
 
+Then of course a new operator is added to the DSL for enabling the using of the priority with the DSL's notation.
