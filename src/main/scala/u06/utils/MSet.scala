@@ -38,6 +38,4 @@ object MSet:
     override def iterator = asMap.keysIterator
     override def toString = s"{${asList.mkString("|")}}"
     override def filter(predicate: A => Boolean): MSet[A] =
-      val res = MSetImpl(asMap.collect { case (key, value) if predicate(key) => key -> value })
-      println(res)
-      res
+      MSetImpl(asMap.collect { case (key, value) if predicate(key) => key -> value })

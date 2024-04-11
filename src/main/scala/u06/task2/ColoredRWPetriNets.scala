@@ -1,11 +1,8 @@
 package scala.u06.task2
 
-import pc.modelling.PetriNet
-
 import scala.u06.modelling.ExtendedPetriNet
 import scala.u06.modelling.ExtendedPetriNet.Color.*
-import scala.u06.modelling.ExtendedPetriNet.Elem
-import scala.u06.task1.ReadersWritersPetriNet.Place
+import scala.u06.modelling.ExtendedPetriNet.*
 
 object ColoredRWPetriNets:
 
@@ -18,24 +15,24 @@ object ColoredRWPetriNets:
   export pc.utils.MSet
 
   def pnRWPriorities = ExtendedPetriNet[Place](
-    MSet(Elem(Idle)) ~~> MSet(Elem(ChooseAction)),
-    MSet(Elem(ChooseAction)) ~~> MSet(Elem(ReadyToRead)) priority 5,
-    MSet(Elem(ChooseAction)) ~~> MSet(Elem(ReadyToWrite)) priority 2,
-    MSet(Elem(ReadyToRead), Elem(HasPermission)) ~~> MSet(Elem(Reading), Elem(HasPermission)),
-    MSet(Elem(Reading)) ~~> MSet(Elem(Idle)),
-    MSet(Elem(ReadyToWrite), Elem(HasPermission)) ~~> MSet(Elem(Writing)) ^^^ MSet(Elem(Reading)),
-    MSet(Elem(Writing)) ~~> MSet(Elem(Idle), Elem(HasPermission))
+    MSet(*(Idle)) ~~> MSet(*(ChooseAction)),
+    MSet(*(ChooseAction)) ~~> MSet(*(ReadyToRead)) priority 5,
+    MSet(*(ChooseAction)) ~~> MSet(*(ReadyToWrite)) priority 2,
+    MSet(*(ReadyToRead), *(HasPermission)) ~~> MSet(*(Reading), *(HasPermission)),
+    MSet(*(Reading)) ~~> MSet(*(Idle)),
+    MSet(*(ReadyToWrite), *(HasPermission)) ~~> MSet(*(Writing)) ^^^ MSet(*(Reading)),
+    MSet(*(Writing)) ~~> MSet(*(Idle), *(HasPermission))
   ).toSystem
 
   def pnRWColored = ExtendedPetriNet[Place](
-    MSet(Elem(Idle, Red)) ~~> MSet(Elem(ChooseAction, Red)),
-    MSet(Elem(ChooseAction, Red)) ~~> MSet(Elem(ReadyToRead, Red)),
-    MSet(Elem(ChooseAction, Black)) ~~> MSet(Elem(ReadyToWrite, Black)),
-    MSet(Elem(ReadyToRead, Red), Elem(HasPermission, Black)) ~~> MSet(Elem(Reading, Red), Elem(HasPermission, Black)),
-    MSet(Elem(Reading, Red)) ~~> MSet(Elem(Idle, Red)),
-    MSet(Elem(ReadyToWrite, Black), Elem(HasPermission, Black)) ~~> MSet(Elem(Writing, Black)) ^^^ MSet(Elem(Reading, Black)),
-    MSet(Elem(Writing, Black)) ~~> MSet(Elem(Idle, Black), Elem(HasPermission, Black))
+    MSet(*(Idle, Red)) ~~> MSet(*(ChooseAction, Red)),
+    MSet(*(ChooseAction, Red)) ~~> MSet(*(ReadyToRead, Red)),
+    MSet(*(ChooseAction, Black)) ~~> MSet(*(ReadyToWrite, Black)),
+    MSet(*(ReadyToRead, Red), *(HasPermission, Black)) ~~> MSet(*(Reading, Red), *(HasPermission, Black)),
+    MSet(*(Reading, Red)) ~~> MSet(*(Idle, Red)),
+    MSet(*(ReadyToWrite, Black), *(HasPermission, Black)) ~~> MSet(*(Writing, Black)) ^^^ MSet(*(Reading, Black)),
+    MSet(*(Writing, Black)) ~~> MSet(*(Idle, Black), *(HasPermission, Black))
   ).toSystem
 
   @main def mainPNMutualExclusion =
-    println(pnRWColored.paths(MSet(Elem(Idle, Red), Elem(HasPermission, Black)),5).toList.mkString("\n"))
+    println(pnRWColored.paths(MSet(*(Idle, Red), *(HasPermission, Black)),5).toList.mkString("\n"))

@@ -3,6 +3,7 @@ package scala.u06.modelling
 import pc.modelling.System
 import pc.utils.MSet
 
+import scala.annotation.targetName
 import scala.collection.immutable.Set
 import scala.math.Ordering
 
@@ -10,13 +11,13 @@ object ExtendedPetriNet:
   enum Color:
     case Black, Red
 
-  case class Elem[P](place: P, color: Color = Color.Black)
+  @targetName("Token")
+  case class *[P](place: P, color: Color = Color.Black)
 
   // pre-conditions, effects, inhibition, priority
-  type Token[P] = Elem[P]
-  case class Trn[P](cond: MSet[Token[P]], eff: MSet[Token[P]], inh: MSet[Token[P]], priority: Int = 1)
+  case class Trn[P](cond: MSet[*[P]], eff: MSet[*[P]], inh: MSet[*[P]], priority: Int = 1)
   type ExtendedPetriNet[P] = Set[Trn[P]]
-  type Marking[P] = MSet[Token[P]]
+  type Marking[P] = MSet[*[P]]
 
   // factory of A Petri Net
   def apply[P](transitions: Trn[P]*): ExtendedPetriNet[P] = transitions.toSet
@@ -31,7 +32,7 @@ object ExtendedPetriNet:
           out <- m extract cond       // remove precondition
         yield (priority, out union eff)
 
-      val maxPriority = allTransitions.map(_._1).max //TODO se nessuno può andare avanti non fa il max
+      val maxPriority = allTransitions.map(_._1).max
       allTransitions.filter((p, _) => p == maxPriority).map(_._2)
 
   // fancy syntax to create transition rules
