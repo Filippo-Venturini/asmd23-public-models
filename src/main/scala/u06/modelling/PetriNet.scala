@@ -16,9 +16,6 @@ object PetriNet:
   // factory of A Petri Net
   def apply[P](transitions: Trn[P]*): PetriNet[P] = transitions.toSet
 
-  implicit def trnOrdering[P]: Ordering[Trn[P]] = Ordering.by(-_.priority)
-  implicit def msetOrdering[P]: Ordering[MSet[P]] = Ordering.by(_.size)
-
   // factory of a System, as a toSystem method
   extension [P](pn: PetriNet[P])
     def toSystem: System[Marking[P]] = m =>
