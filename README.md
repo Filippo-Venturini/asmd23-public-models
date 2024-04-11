@@ -57,6 +57,8 @@ def isBounded(initialState: MSet[Place], depth: Int): Boolean =
 
 In this solution we iterate over all the states and we check that the total number of the token in each state is less equal than the maximum possible number of the tokens in the net. Note that this solution is correct only if we apply it to a Readers and Writers Petri Net, because we know that in this type of nets no more tokens are generated after the initial configuration, so we can know exactly the max possible amount of tokens (k + HasPermission)
 
+At the path *package scala.u06.task1.ReadersWritersPetriNetTest.scala* a simple test is performed using `ScalaTest` for verify all the priorities with a given starting configuration and a given depth.
+
 ## Task 2 - Artist
 
 In this task the implementation of the Petri Net is extended by adding priority values to the transitions of the net.
