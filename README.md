@@ -96,6 +96,12 @@ Then of course a new operator is added to the DSL for enabling the using of the 
 MSet(*(ChooseAction)) ~~> MSet(*(ReadyToRead)) priority 5,
 ```
 
+For check the behaviur we can assign an higher priority in the branch of the reading part and as expected the tokens keeps just reading:
+
+```
+List({*(HasPermission,Black)|*(Idle,Black)}, {*(HasPermission,Black)|*(ChooseAction,Black)}, {*(HasPermission,Black)|*(ReadyToRead,Black)}, {*(HasPermission,Black)|*(Reading,Black)}, {*(HasPermission,Black)|*(Idle,Black)})
+```
+
 ### Colors
 
 We want to extend the model of the Petri Net by adding the possibility to have colored tokens (eg: Black or Red) and each transition also can accept only tokens of a certain color and when fired change the color of the token that goes through.
@@ -116,3 +122,10 @@ MSet(*(Idle, Red)) ~~> MSet(*(ChooseAction, Red)),
 ```
 
 This means that the transition goes from **Idle** place to **ChooseActionPlace**, accept only red tokens and the token keep being red. For change the color of the token is enough to change the color of the second *.
+
+For demonstrate the correct behaviour we can print all the possible path with depth 5, in a PetriNet that has Red transitions only in the red branch and if we use just one red token we obtain the following path in which it keeps just reading:
+
+```
+List({*(HasPermission,Black)|*(Idle,Red)}, {*(HasPermission,Black)|*(ChooseAction,Red)}, {*(HasPermission,Black)|*(ReadyToRead,Red)}, {*(HasPermission,Black)|*(Reading,Red)}, {*(HasPermission,Black)|*(Idle,Red)})
+```
+
