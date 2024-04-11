@@ -29,7 +29,7 @@ The idea for verify the mutual exclusion property is the following:
 - check the two condition that violates the mutual exclusion (multiple writers or reader and writer) by checking the size of the difference between the actual state and the multiset of the wrong condition
 - then all the states examinated should respect the condition
 
-  ### Reachability
+### Reachability
 
   **Def:** Given all the possible paths of a given length, every state must be reached **at least one time**.
 ```
