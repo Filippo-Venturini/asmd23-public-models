@@ -6,7 +6,7 @@ import pc.utils.MSet
 import scala.collection.immutable.Set
 import scala.math.Ordering
 
-object ColoredPetriNet:
+object ExtendedPetriNet:
   enum Color:
     case Black, Red
 
@@ -15,14 +15,14 @@ object ColoredPetriNet:
   // pre-conditions, effects, inhibition, priority
   type Token[P] = Elem[P]
   case class Trn[P](cond: MSet[Token[P]], eff: MSet[Token[P]], inh: MSet[Token[P]], priority: Int = 1)
-  type ColoredPetriNet[P] = Set[Trn[P]]
+  type ExtendedPetriNet[P] = Set[Trn[P]]
   type Marking[P] = MSet[Token[P]]
 
   // factory of A Petri Net
-  def apply[P](transitions: Trn[P]*): ColoredPetriNet[P] = transitions.toSet
+  def apply[P](transitions: Trn[P]*): ExtendedPetriNet[P] = transitions.toSet
 
   // factory of a System, as a toSystem method
-  extension [P](pn: ColoredPetriNet[P])
+  extension [P](pn: ExtendedPetriNet[P])
     def toSystem: System[Marking[P]] = m =>
       val allTransitions =
         for
