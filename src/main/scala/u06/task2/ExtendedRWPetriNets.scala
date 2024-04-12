@@ -26,14 +26,15 @@ object ExtendedRWPetriNets:
 
   def pnRWColored = ExtendedPetriNet[Place](
     MSet(*(Idle, Red)) ~~> MSet(*(ChooseAction, Red)),
+    MSet(*(Idle, Black)) ~~> MSet(*(ChooseAction, Black)),
     MSet(*(ChooseAction, Red)) ~~> MSet(*(ReadyToRead, Red)),
     MSet(*(ChooseAction, Black)) ~~> MSet(*(ReadyToWrite, Black)),
     MSet(*(ReadyToRead, Red), *(HasPermission, Black)) ~~> MSet(*(Reading, Red), *(HasPermission, Black)),
-    MSet(*(Reading, Red)) ~~> MSet(*(Idle, Red)),
+    MSet(*(Reading, Red)) ~~> MSet(*(Idle, Black)),
     MSet(*(ReadyToWrite, Black), *(HasPermission, Black)) ~~> MSet(*(Writing, Black)) ^^^ MSet(*(Reading, Black)),
-    MSet(*(Writing, Black)) ~~> MSet(*(Idle, Black), *(HasPermission, Black))
+    MSet(*(Writing, Black)) ~~> MSet(*(Idle, Red), *(HasPermission, Black))
   ).toSystem
 
   @main def mainExtendedPN =
     println(pnRWPriorities.paths(MSet(*(Idle), *(HasPermission)),5).toList.mkString("\n"))
-    println(pnRWColored.paths(MSet(*(Idle, Red), *(HasPermission, Black)),5).toList.mkString("\n"))
+    println(pnRWColored.paths(MSet(*(Idle, Red), *(HasPermission, Black)),9).toList.mkString("\n"))
