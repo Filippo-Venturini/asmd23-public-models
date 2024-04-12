@@ -1,7 +1,7 @@
 package scala.u06.modelling
 
-import pc.modelling.System
-import pc.utils.MSet
+import u06.modelling.System
+import u06.utils.MSet
 
 import scala.annotation.targetName
 import scala.collection.immutable.Set

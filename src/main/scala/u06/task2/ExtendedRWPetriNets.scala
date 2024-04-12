@@ -3,6 +3,8 @@ package scala.u06.task2
 import scala.u06.modelling.ExtendedPetriNet
 import scala.u06.modelling.ExtendedPetriNet.Color.*
 import scala.u06.modelling.ExtendedPetriNet.*
+import u06.modelling.SystemAnalysis.*
+import u06.utils.MSet
 
 object ExtendedRWPetriNets:
 
@@ -11,8 +13,8 @@ object ExtendedRWPetriNets:
 
   export Place.*
   export scala.u06.modelling.ExtendedPetriNet.*
-  export pc.modelling.SystemAnalysis.*
-  export pc.utils.MSet
+  export u06.modelling.SystemAnalysis.*
+  export u06.utils.MSet
 
   def pnRWPriorities = ExtendedPetriNet[Place](
     MSet(*(Idle)) ~~> MSet(*(ChooseAction)),

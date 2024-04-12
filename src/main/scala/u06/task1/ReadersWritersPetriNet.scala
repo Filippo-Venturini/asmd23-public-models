@@ -1,8 +1,8 @@
 package scala.u06.task1
 
-export pc.modelling.PetriNet
-import pc.utils.MSet
+import u06.modelling.PetriNet
 
+import u06.modelling.PetriNet
 import scala.collection.immutable.LazyList
 
 object ReadersWritersPetriNet:
@@ -10,9 +10,9 @@ object ReadersWritersPetriNet:
     case Idle, ChooseAction, ReadyToRead, ReadyToWrite, Reading, Writing, HasPermission
 
   export Place.*
-  export pc.modelling.PetriNet.*
-  export pc.modelling.SystemAnalysis.*
-  export pc.utils.MSet
+  export u06.modelling.PetriNet.*
+  export u06.modelling.SystemAnalysis.*
+  export u06.utils.MSet
 
   def pnRW = PetriNet[Place](
     MSet(Idle) ~~> MSet(ChooseAction),
