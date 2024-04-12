@@ -30,23 +30,12 @@ object ReadersWritersPetriNet:
         s <- p
       yield s.diff(MSet(Reading, Writing)).size != s.size - 2 && s.diff(MSet(Writing, Writing)).size != s.size - 2).reduce(_ && _)
 
-    /*val paths = pnRW.paths(initialState, depth)
-    !paths.exists { path =>
-      path.exists { state =>
-        val diffReadingWriting = state.diff(MSet(Reading, Writing)).size
-        val diffWritingWriting = state.diff(MSet(Writing, Writing)).size
-        diffReadingWriting == state.size - 2 || diffWritingWriting == state.size - 2
-      }
-    }*/
-    //pnRW.paths(initialState, depth).flatMap(p => p.filter(s => s.diff(MSet(Reading, Writing)).size == s.size - 2 || s.diff(MSet(Writing, Writing)).size == s.size - 2)).isEmpty
-
   def isReachable(initialState: MSet[Place], depth: Int): Boolean =
     (for
       path <- pnRW.paths(initialState, depth)
       state <- path
       place <- state.asList
     yield place).toSet == Place.values.toSet
-
 
   def maxTokenInPN(initialState: MSet[Place]): Int =
     if initialState.matches(MSet(HasPermission)) then initialState.size else initialState.size + 1
