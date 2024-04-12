@@ -1,6 +1,6 @@
-package pc.modelling
+package u06.modelling
 
-import pc.utils.MSet
+import u06.utils.MSet
 
 import scala.u06.task1.ReadersWritersPetriNet.{Place}
 

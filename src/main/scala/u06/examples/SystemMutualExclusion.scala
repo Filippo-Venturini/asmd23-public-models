@@ -1,6 +1,6 @@
-package pc.examples
+package u06.examples
 
-import pc.modelling.System
+import u06.modelling.System
 
 object SystemMutualExclusion:
 
@@ -8,7 +8,7 @@ object SystemMutualExclusion:
     case N, T, C
 
   export State.*
-  export pc.modelling.SystemAnalysis.*
+  export u06.modelling.SystemAnalysis.*
 
   type States = List[State]
 
