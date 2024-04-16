@@ -10,21 +10,24 @@ def averageCommunicationDoneTime(nRun: Int): Double =
                                             .toList
                                             .find(e => e.state == DONE).map(e => e.time).getOrElse(0.0)) / nRun
 
+//Itera tutte le run, accumulando come risultato finale una coppia (timeInFail, totalTime).
+// Internamente la fold data una lista di coppie di eventi, accumula una coppia (tempoInFail, tempoTotale)
 def relativeFailTime(nRun: Int): Double =
-  stocChannel.newSimulationTrace(IDLE, new Random)
-    .take(10)
-    .toList
+  val totalTimes = (0 to nRun).foldLeft((0.0, 0.0)) ((acc, _) => {
+    val (failTime, totTime) = stocChannel.newSimulationTrace(IDLE, new Random)
+      .take(10)
+      .toList
+      .sliding(2)
+      .foldLeft((0.0, 0.0)) ( (z, s) => if (s(0).state == FAIL) (z._1 + (s(1).time - s(0).time), s(1).time) else (z._1, s(1).time))
 
-  1.0
+    (acc._1 + failTime, acc._2 + totTime)
+  })
+
+  totalTimes._1 / totalTimes._2
 
 
 @main def mainStochasticChannelSimulation =
 
-  println(averageCommunicationDoneTime(5))
+  println("Avarerage communication time: " + averageCommunicationDoneTime(5))
 
-  Time.timed:
-    println:
-      stocChannel.newSimulationTrace(IDLE, new Random)
-        .take(10)
-        .toList
-        .mkString("\n")
+  println("Relative fail percentage time: " + relativeFailTime(10))
