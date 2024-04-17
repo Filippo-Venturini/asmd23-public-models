@@ -22,30 +22,7 @@ object ReadersWritersPetriNet:
     MSet(Reading) ~~> MSet(Idle),
     MSet(ReadyToWrite, HasPermission) ~~> MSet(Writing) ^^^ MSet(Reading),
     MSet(Writing) ~~> MSet(Idle, HasPermission)
-  ).toSystem
-
-  def isMutuallyExclusive(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-        p <- pnRW.paths(initialState, depth)
-        s <- p
-      yield PetriNet.isMutuallyExclusive(s, MSet(Writing, Writing), MSet(Reading, Writing))).reduce(_ && _)
-
-  def isReachable(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-      path <- pnRW.paths(initialState, depth)
-      state <- path
-      place <- state.asList
-    yield place).toSet == Place.values.toSet
-
-  def maxTokenInPN(initialState: MSet[Place]): Int =
-    if initialState.matches(MSet(HasPermission)) then initialState.size else initialState.size + 1
-
-  def isBounded(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-      path: Path[Marking[Place]] <- pnRW.paths(initialState, depth)
-      state <- path
-    yield state.size <= maxTokenInPN(initialState)).reduce(_ && _)
-
+  )
 
   @main def mainPNMutualExclusion =
-    println(pnRW.paths(MSet(Idle, Idle, HasPermission), 3).toList.mkString("\n"))
+    println(pnRW.toSystem.paths(MSet(Idle, Idle, HasPermission), 3).toList.mkString("\n"))
