@@ -5,7 +5,7 @@ For perform this task, an implementation of the Readers and Writers Petri Net is
 
 The implementation can be found in the path *scala.u06.task1.ReadersWritersPetriNet.scala*
 
-For reach the goals of the task three methods are written for tests three safety propreties of the RW Petri Net: **Mutual Exclusion**, **Reachability** and **Boundedness**.
+For reach the goals of the task three **API** are written for tests three safety propreties of **any** Petri Nets: **Mutual Exclusion**, **Reachability** and **Boundedness**.
 
 The overall idea of the three methods is to iterate over all the possible paths of a given lenght and with a given starting configuration and prove that the safety property is never violated.
 
@@ -16,29 +16,29 @@ Of course the lenght of the paths examinated must be big enough for assume that 
 **Def:** In all the possible path of a given length there must not be one token in Reading and one token in Writing or two or more token in Writing.
 
 ```
-def isMutuallyExclusive(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-        p <- pnRW.paths(initialState, depth)
+def isMutuallyExclusive(initialState: Marking[P], depth: Int, criticalStates: MSet[P]*): Boolean =
+      (for
+        p <- pn.toSystem.paths(initialState, depth)
         s <- p
-      yield s.diff(MSet(Reading, Writing)).size != s.size - 2 && s.diff(MSet(Writing, Writing)).size != s.size - 2).reduce(_ && _)
+      yield criticalStates.forall(criticalPlaces => s.diff(criticalPlaces).size != s.size - 2)).reduce(_ && _)
 ```
 
 The idea for verify the mutual exclusion property is the following:
 - iterate in all the possible path with a given depth
 - get each state of the net in a single path
-- check the two condition that violates the mutual exclusion (multiple writers or reader and writer) by checking the size of the difference between the actual state and the multiset of the wrong condition
+- check if any state reached contains the critical states that violates the mutual exclusion (In case of the RW net two Writers or Readers and Writers)
 - then all the states examinated should respect the condition
 
 ### Reachability
 
   **Def:** Given all the possible paths of a given length, every state must be reached **at least one time**.
 ```
-def isReachable(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-      path <- pnRW.paths(initialState, depth)
-      state <- path
-      place <- state.asList
-    yield place).toSet == Place.values.toSet
+def isReachable(initialState: Marking[P], depth: Int): Boolean =
+      (for
+        path <- pn.toSystem.paths(initialState, depth)
+        state <- path
+        place <- state.asList
+      yield place).toSet == Place.values.toSet
 ```
 
 Also here the idea is to iterate all the paths and the states, but in this case we are accumulating all the places encountered. Then we convert the Sequence into a Set and we check that all the States are reached by using all the values present in the enumeration.
@@ -48,16 +48,18 @@ Also here the idea is to iterate all the paths and the states, but in this case 
 **Def:** Given all the possible path of a given length, the number of tokens in each place remains bounded, preventing resource exhaustion or overflow.
 
 ```
-def isBounded(initialState: MSet[Place], depth: Int): Boolean =
-    (for
-      path: Path[Marking[Place]] <- pnRW.paths(initialState, depth)
-      state <- path
-    yield state.size <= maxTokenInPN(initialState)).reduce(_ && _)
+def isBounded(initialState: Marking[P], depth: Int, maxTokenInPN: Int): Boolean =
+      (for
+        path: Path[Marking[P]] <- pn.toSystem.paths(initialState, depth)
+        state <- path
+      yield state.size <= maxTokenInPN).reduce(_ && _)
 ```
 
-In this solution we iterate over all the states and we check that the total number of the token in each state is less equal than the maximum possible number of the tokens in the net. Note that this solution is correct only if we apply it to a Readers and Writers Petri Net, because we know that in this type of nets no more tokens are generated after the initial configuration, so we can know exactly the max possible amount of tokens (k + HasPermission)
+In this solution we iterate over all the states and we check that the total number of the token in each state is less equal than the maximum possible number of the tokens in the net. Note that this solution is correct only if we apply it to a Readers and Writers Petri Net, because we know that in this type of nets no more tokens are generated after the initial configuration, so we can know exactly the max possible amount of tokens (k + HasPermission). For others Petri Nets we need to have a boundary to take into account for check if the number of tokens is increasing to infinite or not.
 
 At the path *package scala.u06.task1.ReadersWritersPetriNetTest.scala* a simple test is performed using `ScalaTest` for verify all the priorities with a given starting configuration and a given depth.
+
+We limited the length of the paths taken into account at 10, because with longest paths the execution requires a lot of time.
 
 ## Task 2 - Artist
 
@@ -129,3 +131,24 @@ For demonstrate the correct behaviour we can print all the possible path with de
 List({*(HasPermission,Black)|*(Idle,Red)}, {*(HasPermission,Black)|*(ChooseAction,Red)}, {*(HasPermission,Black)|*(ReadyToRead,Red)}, {*(HasPermission,Black)|*(Reading,Red)}, {*(HasPermission,Black)|*(Idle,Red)})
 ```
 
+# Lab 07 - Stochastic Modelling
+
+## Task 1 - Simulator
+
+In this task we wrote two functions for compute some analysis on the `StochasticChannel`.
+
+The code can be found at the path: *package u07.examples.StochasticChannelSimulation.scala*
+
+The first function is necessary for compute the avarage time at which the communication is done across n runs.
+
+```
+def averageCommunicationDoneTime(nRun: Int): Double =
+  (0 to nRun).foldLeft(0.0)((z, _) => z + stocChannel.newSimulationTrace(IDLE, new Random)
+                                            .take(10)
+                                            .toList
+                                            .find(e => e.state == DONE).map(e => e.time).getOrElse(0.0)) / nRun
+```
+
+The goal is achieved by computing a simulation of the communication n times, and for each time we accumulate the time at which the state `DONE` is reached by the `foldLeft` operator. After that we have the sum of all the times and we compute the average just dividing by the total numbers of run.
+
+The second function is a bit more complex and it computes the percentage of time in which the system stay in the `FAIL` state until it succesfully end the communication.
