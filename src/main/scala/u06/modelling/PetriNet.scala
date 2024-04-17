@@ -10,6 +10,9 @@ object PetriNet:
   type PetriNet[P] = Set[Trn[P]]
   type Marking[P] = MSet[P]
 
+  def isMutuallyExclusive[P](actualState: Marking[P], criticalStates: MSet[P]*): Boolean =
+    criticalStates.forall(criticalPlaces => actualState.diff(criticalPlaces).size != actualState.size - 2)
+
   // factory of A Petri Net
   def apply[P](transitions: Trn[P]*): PetriNet[P] = transitions.toSet
   // factory of a System, as a toSystem method

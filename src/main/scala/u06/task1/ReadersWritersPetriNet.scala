@@ -28,7 +28,7 @@ object ReadersWritersPetriNet:
     (for
         p <- pnRW.paths(initialState, depth)
         s <- p
-      yield s.diff(MSet(Reading, Writing)).size != s.size - 2 && s.diff(MSet(Writing, Writing)).size != s.size - 2).reduce(_ && _)
+      yield PetriNet.isMutuallyExclusive(s, MSet(Writing, Writing), MSet(Reading, Writing))).reduce(_ && _)
 
   def isReachable(initialState: MSet[Place], depth: Int): Boolean =
     (for
