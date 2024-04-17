@@ -11,6 +11,7 @@ trait MSet[A] extends (A => Int):
   def asList: List[A]
   def asMap: Map[A,Int]
   def iterator: Iterator[A]
+  def countOccurrences(a: A): Int
 
 // Functional-style helpers/implementation
 object MSet:
@@ -36,3 +37,4 @@ object MSet:
       Some(this diff m) filter (_.size == size - m.size)
     override def iterator = asMap.keysIterator
     override def toString = s"{${asList.mkString("|")}}"
+    override def countOccurrences(a: A): Int = asList.count(_ == a)

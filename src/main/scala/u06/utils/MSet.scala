@@ -12,7 +12,6 @@ trait MSet[A] extends (A => Int):
   def asMap: Map[A,Int]
   def iterator: Iterator[A]
   def filter(predicate: A => Boolean): MSet[A]
-  def countOccurrences(a: A): Int
 
 // Functional-style helpers/implementation
 object MSet:
@@ -40,4 +39,3 @@ object MSet:
     override def toString = s"{${asList.mkString("|")}}"
     override def filter(predicate: A => Boolean): MSet[A] =
       MSetImpl(asMap.collect { case (key, value) if predicate(key) => key -> value })
-    override def countOccurrences(a: A): Int = asList.count(_ == a)
