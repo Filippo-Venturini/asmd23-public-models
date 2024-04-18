@@ -19,16 +19,18 @@ object BrussellatorPN:
   export u07.modelling.SPN.*
 
   val brussellatorPN = SPN[Place](
-    Trn(MSet(A), m => 1, MSet(X), MSet()),
-    Trn(MSet(X, X, Y), m => m(X) * m(Y) * 1, MSet(X, X, X), MSet()),
-    Trn(MSet(B, X), m => m(B) * m(X) * 1, MSet(Y, D), MSet()),
+    Trn(MSet(), m => 10, MSet(A), MSet()),
+    Trn(MSet(), m => 10, MSet(B), MSet()),
+    Trn(MSet(A), m => m(A) * (1 + 0.1 / math.exp(m(X))), MSet(X), MSet()),
+    Trn(MSet(X, X, Y), m =>  m(X) * m(Y) * (1 + 0.1 / math.exp(m(X))), MSet(X, X, X), MSet()),
+    Trn(MSet(B, X), m => m(B) * m(X) * (1 + 0.1 * math.exp(m(X))), MSet(Y, D), MSet()),
     Trn(MSet(X), m => m(X) * 1, MSet(E), MSet())
   )
 
 @main def mainBrusselatorPN =
 
   val simulation = toCTMC(brussellatorPN).newSimulationTrace(MSet(A,B,B,B,X,Y), new Random)
-    .take(10)
+    .take(50)
     .toList
   simulation.foreach(println)
 
