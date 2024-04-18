@@ -186,7 +186,7 @@ val stochasticRWPN = SPN[Place](
   )
 ```
 
-After implementing the Petri Net different simulation were performed and the API `relativeTimeInCondition` written in the first task was used for calculating the average time of the net in Reading and Writing state, trying different combinations of rates.
+After implementing the Petri Net different simulation were performed and the API `relativeTimeInCondition` written in the first task was used for calculating the average time of the net in Reading and Writing state, trying different combinations of rates. All the simulation are executed with **5 tokens** in the **IDLE** state.
 
 | Reading rate | Writing rate | % of time in Reading | % of time in Writing |
 |--------------|--------------|----------------------|----------------------|
@@ -200,7 +200,15 @@ After implementing the Petri Net different simulation were performed and the API
 
 In this table is shown how the % of time variates according to the rates chosen for the two correspondent transitions. For example obviusly if we put a really high rate on Reading we see that we have 80% of probability that a token goes to the Reading branch and so the total amount of time spent in the Reading state is much higher then the reading one.
 
-Another rate that changes the time 
+Another rate that can be tuned (while keeping fixed the others) is the one that regulate the transition between `Idle` and `ChooseAction` that influence for example the time spent by the net without Reading or Writing.
+
+| Idle rate    | % of time not Reading or Writing |
+|--------------|----------------------------------|
+| 1.0          | 28.1%                            |
+| 0.1          | 56.3%                            |
+| 0.01         | 94.2%                            |
+
+By decreasing it we see that we are making the transition really slow and we are making the net spending more time without Reading or Writing
 
 ## Task 3 - Chemist
 
