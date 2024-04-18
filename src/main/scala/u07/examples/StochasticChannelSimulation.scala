@@ -6,6 +6,6 @@ import u07.examples.StochasticChannel.*
 
 @main def mainStochasticChannelSimulation =
 
-  println("Avarerage communication time: " + stocChannel.averageTimeToReachState(10, IDLE, DONE))
+  println("Avarerage communication done time: " + stocChannel.averageTimeToReachState(10, IDLE, DONE))
 
   println("Relative fail percentage time: " + stocChannel.relativeTimeInState(10, IDLE, FAIL))

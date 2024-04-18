@@ -1,7 +1,11 @@
 package scala.u07.task2
 
 import u07.modelling.SPN
+import u07.modelling.SPN.toCTMC
 import u07.utils.MSet
+
+import scala.u07.task2.StochasticRWPN.stochasticRWPN
+import StochasticRWPN.Place.*
 
 object StochasticRWPN:
   enum Place:
@@ -20,4 +24,9 @@ object StochasticRWPN:
     Trn(MSet(ReadyToWrite, HasPermission), m => 100000, MSet(Writing), MSet(Reading)),
     Trn(MSet(Writing), m => 0.2, MSet(Idle, HasPermission), MSet())
   )
+
+@main def mainStochasticRWPNSimulation =
+  println("Average time in READING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Reading) > 0))
+
+  println("Average time in WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Writing) > 0))
 
