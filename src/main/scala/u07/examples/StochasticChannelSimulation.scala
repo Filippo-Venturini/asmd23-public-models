@@ -10,8 +10,6 @@ def averageCommunicationDoneTime(nRun: Int): Double =
                                             .toList
                                             .find(e => e.state == DONE).map(e => e.time).getOrElse(0.0)) / nRun
 
-//Itera tutte le run, accumulando come risultato finale una coppia (timeInFail, totalTime).
-// Internamente la fold data una lista di coppie di eventi, accumula una coppia (tempoInFail, tempoTotale)
 def relativeFailTime(nRun: Int): Double =
   val totalTimes = (0 to nRun).foldLeft((0.0, 0.0)) ((acc, _) => {
     val (failTime, totTime) = stocChannel.newSimulationTrace(IDLE, new Random)

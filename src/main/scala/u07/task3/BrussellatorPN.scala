@@ -1,4 +1,4 @@
-package scala.u07.task2
+package scala.u07.task3
 
 import u07.examples.StochasticMutualExclusion.Place
 import u07.utils.MSet
@@ -7,7 +7,7 @@ import u07.modelling.SPN.toCTMC
 
 import org.knowm.xchart.{QuickChart, SwingWrapper, XYChart}
 import java.util.Random
-import scala.u07.task2.BrussellatorPN.brussellatorPN
+import scala.u07.task3.BrussellatorPN.brussellatorPN
 import BrussellatorPN.Place.*
 
 object BrussellatorPN:
