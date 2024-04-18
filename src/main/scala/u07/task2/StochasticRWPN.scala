@@ -1,10 +1,11 @@
 package scala.u07.task2
 
+import u06.modelling.PetriNet.Marking
 import u07.modelling.SPN
 import u07.modelling.SPN.toCTMC
 import u07.utils.MSet
 
-import scala.u07.task2.StochasticRWPN.stochasticRWPN
+import scala.u07.task2.StochasticRWPN.{Place, isNotReadingOrWriting, isReading, isWriting, stochasticRWPN}
 import StochasticRWPN.Place.*
 
 object StochasticRWPN:
@@ -14,6 +15,10 @@ object StochasticRWPN:
   export Place.*
   export u07.modelling.CTMCSimulation.*
   export u07.modelling.SPN.*
+
+  val isReading: MSet[Place] => Boolean = m => m(Reading) > 0
+  val isWriting: MSet[Place] => Boolean = m => m(Writing) > 0
+  val isNotReadingOrWriting: MSet[Place] => Boolean = m => m(Writing) == 0 && m(Reading) == 0
 
   val stochasticRWPN = SPN[Place](
     Trn(MSet(Idle), m => 1.0, MSet(ChooseAction), MSet()),
@@ -26,8 +31,11 @@ object StochasticRWPN:
   )
 
 @main def mainStochasticRWPNSimulation =
-  println("Average time in READING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Reading) > 0))
+  val nRuns: Int = 10
+  val startingState: MSet[Place] = MSet(Idle, Idle, Idle, Idle, Idle, HasPermission)
+  
+  println("Average time in READING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(nRuns, startingState, isReading))
 
-  println("Average time in WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Writing) > 0))
+  println("Average time in WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(nRuns, startingState, isWriting))
 
-  println("Average time not READING or WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Writing) == 0 && m(Reading) == 0))
+  println("Average time not READING or WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(nRuns, startingState, isNotReadingOrWriting))
