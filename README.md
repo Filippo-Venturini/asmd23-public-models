@@ -152,3 +152,35 @@ def averageCommunicationDoneTime(nRun: Int): Double =
 The goal is achieved by computing a simulation of the communication n times, and for each time we accumulate the time at which the state `DONE` is reached by the `foldLeft` operator. After that we have the sum of all the times and we compute the average just dividing by the total numbers of run.
 
 The second function is a bit more complex and it computes the percentage of time in which the system stay in the `FAIL` state until it succesfully end the communication.
+
+```
+def relativeFailTime(nRun: Int): Double =
+  val totalTimes = (0 to nRun).foldLeft((0.0, 0.0)) ((acc, _) => {
+    val (failTime, totTime) = stocChannel.newSimulationTrace(IDLE, new Random)
+      .take(10)
+      .toList
+      .sliding(2)
+      .foldLeft((0.0, 0.0)) ( (z, s) => if (s(0).state == FAIL) (z._1 + (s(1).time - s(0).time), s(1).time) else (z._1, s(1).time))
+
+    (acc._1 + failTime, acc._2 + totTime)
+  })
+
+  totalTimes._1 / totalTimes._2
+```
+
+The function generate n runs, and for each run it accumulate a tuple `(failTime, totalTime)` by iterating the single simulation and considering a couple of `Event`. If the current event is `FAIL` it accumulate the fail time by calculating the subtraction between the next event time and the current one. After we have for a single simulation the couple `(failTime, totalTime)` we accumulate it with an external `foldLeft` and then we just need to divide the total time in fail and the total time of all the simulations to get the percentage.
+
+## Task 2 - Chemist
+
+The code of this task can be found at the path: *scala.u07.task2.BrussellatorPN.scala*
+
+Here I modeled the Brussellator chemical model ad the following Stochastic Petri Net:
+
+```
+val brussellatorPN = SPN[Place](
+    Trn(MSet(A), m => 1, MSet(X), MSet()),
+    Trn(MSet(X, X, Y), m => m(X) * m(Y) * 1, MSet(X, X, X), MSet()),
+    Trn(MSet(B, X), m => m(B) * m(X) * 1, MSet(Y, D), MSet()),
+    Trn(MSet(X), m => m(X) * 1, MSet(E), MSet())
+  )
+```
