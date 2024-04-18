@@ -170,9 +170,41 @@ def relativeFailTime(nRun: Int): Double =
 
 The function generate n runs, and for each run it accumulate a tuple `(failTime, totalTime)` by iterating the single simulation and considering a couple of `Event`. If the current event is `FAIL` it accumulate the fail time by calculating the subtraction between the next event time and the current one. After we have for a single simulation the couple `(failTime, totalTime)` we accumulate it with an external `foldLeft` and then we just need to divide the total time in fail and the total time of all the simulations to get the percentage.
 
-## Task 2 - Chemist
+## Task 2 - Guru
 
-The code of this task can be found at the path: *scala.u07.task2.BrussellatorPN.scala*
+In this task an implementation of a Stochastic Readers and Writers Petri Net is developed. The code can be found at: *scala.u07.task2.StochasticRWPN.scala*.
+
+```
+val stochasticRWPN = SPN[Place](
+    Trn(MSet(Idle), m => 1.0, MSet(ChooseAction), MSet()),
+    Trn(MSet(ChooseAction), m => 200000, MSet(ReadyToRead), MSet()),
+    Trn(MSet(ChooseAction), m => 100000, MSet(ReadyToWrite), MSet()),
+    Trn(MSet(ReadyToRead, HasPermission), m => 100000, MSet(Reading, HasPermission), MSet()),
+    Trn(MSet(Reading), m => 0.1 * m(Reading), MSet(Idle), MSet()),
+    Trn(MSet(ReadyToWrite, HasPermission), m => 100000, MSet(Writing), MSet(Reading)),
+    Trn(MSet(Writing), m => 0.2, MSet(Idle, HasPermission), MSet())
+  )
+```
+
+After implementing the Petri Net different simulation were performed and the API `relativeTimeInCondition` written in the first task was used for calculating the average time of the net in Reading and Writing state, trying different combinations of rates.
+
+| Reading rate | Writing rate | % of time in Reading | % of time in Writing |
+|--------------|--------------|----------------------|----------------------|
+| 400000       | 100000       | 87.2%                | 9.5%                 |
+| 300000       | 100000       | 81.9%                | 12.3%                |
+| 200000       | 100000       | 68.5%                | 23.4%                |
+| 100000       | 100000       | 50.2%                | 44.0%                |
+| 100000       | 200000       | 39.3%                | 54.7%                |
+| 100000       | 300000       | 33.0%                | 58.0%                |
+| 100000       | 400000       | 22.3%                | 73.0%                |
+
+In this table is shown how the % of time variates according to the rates chosen for the two correspondent transitions. For example obviusly if we put a really high rate on Reading we see that we have 80% of probability that a token goes to the Reading branch and so the total amount of time spent in the Reading state is much higher then the reading one.
+
+Another rate that changes the time 
+
+## Task 3 - Chemist
+
+The code of this task can be found at the path: *scala.u07.task3.BrussellatorPN.scala*
 
 Here I modeled the Brussellator chemical model ad the following Stochastic Petri Net:
 
