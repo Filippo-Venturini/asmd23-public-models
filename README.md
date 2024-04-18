@@ -137,38 +137,58 @@ List({*(HasPermission,Black)|*(Idle,Red)}, {*(HasPermission,Black)|*(ChooseActio
 
 In this task we wrote two functions for compute some analysis on the `StochasticChannel`.
 
-The code can be found at the path: *package u07.examples.StochasticChannelSimulation.scala*
+The code can be found at the path: *u07.modelling.CTMCSimulation.scala* and *u07.examples.StochasticChannelSimulation.scala*
 
-The first function is necessary for compute the avarage time at which the communication is done across n runs.
+I extracted three API's for perform check and analisys on a generic CTMC, these API are then used for test the required properties.
 
-```
-def averageCommunicationDoneTime(nRun: Int): Double =
-  (0 to nRun).foldLeft(0.0)((z, _) => z + stocChannel.newSimulationTrace(IDLE, new Random)
-                                            .take(10)
-                                            .toList
-                                            .find(e => e.state == DONE).map(e => e.time).getOrElse(0.0)) / nRun
-```
-
-The goal is achieved by computing a simulation of the communication n times, and for each time we accumulate the time at which the state `DONE` is reached by the `foldLeft` operator. After that we have the sum of all the times and we compute the average just dividing by the total numbers of run.
-
-The second function is a bit more complex and it computes the percentage of time in which the system stay in the `FAIL` state until it succesfully end the communication.
+The first function is necessary for compute the average time at which a CTMC reach a defined state.
 
 ```
-def relativeFailTime(nRun: Int): Double =
-  val totalTimes = (0 to nRun).foldLeft((0.0, 0.0)) ((acc, _) => {
-    val (failTime, totTime) = stocChannel.newSimulationTrace(IDLE, new Random)
-      .take(10)
-      .toList
-      .sliding(2)
-      .foldLeft((0.0, 0.0)) ( (z, s) => if (s(0).state == FAIL) (z._1 + (s(1).time - s(0).time), s(1).time) else (z._1, s(1).time))
-
-    (acc._1 + failTime, acc._2 + totTime)
-  })
-
-  totalTimes._1 / totalTimes._2
+def averageTimeToReachState(nRun: Int, initialState: S, stateToCheck: S): Double =
+      (0 to nRun).foldLeft(0.0)((z, _) => z + self.newSimulationTrace(initialState, new Random)
+        .take(10)
+        .toList
+        .find(e => e.state == stateToCheck).map(e => e.time).getOrElse(0.0)) / nRun
 ```
 
-The function generate n runs, and for each run it accumulate a tuple `(failTime, totalTime)` by iterating the single simulation and considering a couple of `Event`. If the current event is `FAIL` it accumulate the fail time by calculating the subtraction between the next event time and the current one. After we have for a single simulation the couple `(failTime, totalTime)` we accumulate it with an external `foldLeft` and then we just need to divide the total time in fail and the total time of all the simulations to get the percentage.
+The goal is achieved by computing a simulation of the communication n times, and for each time we accumulate the time at which the state that we want to check is reached by the `foldLeft` operator. After that we have the sum of all the times and we compute the average just dividing by the total numbers of run.
+
+The second function is a bit more complex and it computes the percentage of time in which the system respect a defined condition (expressed by f).
+
+```
+def relativeTimeInCondition(nRun: Int, initialState: S, f: S => Boolean): Double =
+      val totalTimes = (0 to nRun).foldLeft((0.0, 0.0))((acc, _) => {
+        val (stateTime, totTime) = self.newSimulationTrace(initialState, new Random)
+          .take(10)
+          .toList
+          .sliding(2)
+          .foldLeft((0.0, 0.0))((z, s) => if (f(s(0).state)) (z._1 + (s(1).time - s(0).time), s(1).time) else (z._1, s(1).time))
+
+        (acc._1 + stateTime, acc._2 + totTime)
+      })
+
+      totalTimes._1 / totalTimes._2
+```
+
+The function generate n runs, and for each run it accumulate a tuple `(conditionTime, totalTime)` by iterating the single simulation and considering a couple of `Event`. If the current event is respecting the condition it accumulate the time by calculating the subtraction between the next event time and the current one. After we have for a single simulation the couple `(conditionTime, totalTime)` we accumulate it with an external `foldLeft` and then we just need to divide the total time with the condition respected and the total time of all the simulations to get the percentage.
+
+The third function is used to check the relative time in which the CTMC stays in a defined state, just by invoking the previous function.
+
+```
+def relativeTimeInState(nRun: Int, initialState: S, stateToCheck: S): Double =
+      relativeTimeInCondition(nRun, initialState, _ == stateToCheck)
+```
+
+Eventually we can use these general API for test the StochasticChannel in this way:
+
+```
+println("Avarerage communication done time: " + stocChannel.averageTimeToReachState(10, IDLE, DONE))
+println("Relative fail percentage time: " + stocChannel.relativeTimeInState(10, IDLE, FAIL))
+```
+
+Obtaining:
+- Average communication done time: 1.564279627167613 time units
+- Relative fail percentage time: 6.15260578867424E-7 time units
 
 ## Task 2 - Guru
 
