@@ -30,3 +30,4 @@ object StochasticRWPN:
 
   println("Average time in WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Writing) > 0))
 
+  println("Average time not READING or WRITING: " + toCTMC(stochasticRWPN).relativeTimeInCondition(10, MSet(Idle, Idle, Idle, Idle, Idle, HasPermission), m => m(Writing) == 0 && m(Reading) == 0))
