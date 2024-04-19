@@ -244,3 +244,4 @@ val brussellatorPN = SPN[Place](
     Trn(MSet(X), m => m(X) * 1, MSet(E), MSet())
   )
 ```
+![Brussellator graph](https://github.com/Filippo-Venturini/asmd23-public-models/blob/master/Brussellator.png)
