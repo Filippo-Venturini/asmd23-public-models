@@ -238,10 +238,32 @@ Here I modeled the Brussellator chemical model ad the following Stochastic Petri
 
 ```
 val brussellatorPN = SPN[Place](
+    Trn(MSet(), m => 1, MSet(A), MSet()),
+    Trn(MSet(), m => 1, MSet(B), MSet()),
     Trn(MSet(A), m => 1, MSet(X), MSet()),
-    Trn(MSet(X, X, Y), m => m(X) * m(Y) * 1, MSet(X, X, X), MSet()),
-    Trn(MSet(B, X), m => m(B) * m(X) * 1, MSet(Y, D), MSet()),
-    Trn(MSet(X), m => m(X) * 1, MSet(E), MSet())
+    Trn(MSet(X, X, Y), m =>  m(Y), MSet(X, X, X), MSet()),
+    Trn(MSet(B, X), m => m(X) * 0.5, MSet(Y, D), MSet()),
+    Trn(MSet(X), m => m(X) * 0.5, MSet(E), MSet())
   )
 ```
+
+The difficult part of this task is to balance correctly the rates of the transitions for obtaining an oscillation in terms of X and Y. 
+
+First of all regarding the chemical reaction they assume that reagents A and B are constant so we need to model it by the first two transitions that with a certain probability are producing the reagents.
+
+Then the best balance found for the rates follows these ideas:
+
+- Let the rate of the transition that consume Y and produce X depends on the number of Y, so if the net contains a lot of Y the rate is bigger and viceversa.
+- Let the rates of the transitions that consume X depends on the numer of X, so if the net contains a lot of X the rate is bigger and viceversa.
+- Given the Brussellator has two transitions that consume X and only one that consume Y, both the transitions that consumes X are multiplied by 0.5.
+
+By using these ideas we obtain the following result:
+
 ![Brussellator graph](https://github.com/Filippo-Venturini/asmd23-public-models/blob/master/Brussellator.png)
+
+# Lab 08 - Stochastic Analysis
+
+## Task 1 - PRISM
+
+
+ 
