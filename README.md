@@ -265,5 +265,57 @@ By using these ideas we obtain the following result:
 
 ## Task 1 - PRISM
 
+In this task we used PRISM Model Checker for verify some propreties of the Readers and Writers Stochastic Petri Net.
 
- 
+First of all this is the model used for the simulations:
+
+```
+ctmc
+const int N = 20;
+module RW
+p1 : [0..N] init N;
+p2 : [0..N] init 0;
+p3 : [0..N] init 0;
+p4 : [0..N] init 0;
+p5 : [0..N] init 1;
+p6 : [0..N] init 0;
+p7 : [0..N] init 0;
+[t1] p1>0 & p2<N -> 1 : (p1'=p1-1)&(p2'=p2+1);
+[t2] p2>0 & p3<N -> 200000 : (p2'=p2-1) & (p3'=p3+1);
+[t3] p2>0 & p4<N -> 100000 : (p2'=p2-1) & (p4'=p4+1);
+[t4] p3>0 & p5>0 & p6<N -> 100000 : (p3'=p3-1) & (p6'=p6+1);
+[t5] p4>0 & p5>0 & p6=0 & p7<N -> 100000 : (p4'=p4-1) & (p5'=p5-1) & (p7'=p7+1);
+[t6] p6>0 & p1<N -> p6*1 : (p6'=p6-1) & (p1'=p1+1);
+[t7] p7>0 & p5<N & p1<N -> 0.5 : (p7'=p7-1) & (p1'=p1+1) & (p5'=p5+1);
+endmodule
+```
+
+We tried to investigate the probability that in k steps at least one process will be able to read:
+
+```
+P=? [(true) U<=k (p6>0)]
+```
+
+And plotting a graphic this is the trend of the probability in 10 steps:
+
+
+Then we performed the same investigation but considering the probability that at least one process will be able to write:
+
+```
+P=? [(true) U<=k (p7>0)]
+```
+
+And this is the trend of the probability in 10 steps:
+
+
+So we can notice that of course, in the write graphic the curve is less steep, because of the rates assigned.
+
+Then another property that is interesting to verify is that the mutual exclusion is never violated:
+
+```
+ P=? [(true) U<=k (p6>0) & (p7>0)]
+```
+
+And using the **verify** option of PRISM we obtain the following result:
+
+
