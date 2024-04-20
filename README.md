@@ -298,6 +298,7 @@ P=? [(true) U<=k (p6>0)]
 
 And plotting a graphic this is the trend of the probability in 10 steps:
 
+![PRISM Read graphic](img/PRISM-ReadingGraphic.png)
 
 Then we performed the same investigation but considering the probability that at least one process will be able to write:
 
@@ -307,6 +308,7 @@ P=? [(true) U<=k (p7>0)]
 
 And this is the trend of the probability in 10 steps:
 
+![PRISM Write graphic](img/PRISM-WritingGraphic.png)
 
 So we can notice that of course, in the write graphic the curve is less steep, because of the rates assigned.
 
@@ -318,4 +320,5 @@ Then another property that is interesting to verify is that the mutual exclusion
 
 And using the **verify** option of PRISM we obtain the following result:
 
+![PRISM Mutual Exclusion](img/PRISM-MutualExclusion.png)
 
