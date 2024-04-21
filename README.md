@@ -350,7 +350,7 @@ Then I specified that our system is modeling a Readers and Writers scenario and 
 
 It also explained how the PRISM syntax works.
 
-### First approach : PRISM syntax
+### Model checking (First approach) : PRISM syntax
 
 In this phase I asked `ChatGPT` to calculate the probability of the following property: P=? [(true) U<=2 (p6>0)] (So the probability that a proccess is able to read the resource at most in 2 steps)
 
@@ -362,13 +362,13 @@ And then it calculated the probability based on this assumption providing 0 as r
 
 I tried to correct the LLM but it keeped misunderstanding the request.
 
-### Second approach : words property
+### Model checking (Second approach) : words property
 
 I started a new conversation in which I just sent to ChatGPT the model of the CTMC without mentioning PRISM or making other question. Then I tried to ask to calculate the property with the following question:
 
 > "Given the model above, what is the probability that p6 is > 0 in at most 2 steps?"
 
-Here `ChatGPT` tried to analyze the probabilities that t4, t5 and t7 occur in at most two steps and it returned the following Python script for perform the calculations:
+It first suggested to use PRISM and provided some code, but when forced to calculate everything byy itself, `ChatGPT` tried to analyze the probabilities that t4, t5 and t7 occur in at most two steps and it returned the following Python script for perform the calculations:
 
 ```
 import numpy as np
@@ -394,13 +394,13 @@ print("Probability of p6 > 0 in at most 2 steps:", total_prob)
 
 The above code return p = 2.63212 which is wrong.
 
-### Third approach: asking for a simulation
+### Model checking (Third approach): asking for a simulation
 
-In this last phase, after providing the model of the CTMC I directly asked to `ChatGPT` to perform a simple simulation for verify the property and provide the predicted result, but also in this case the answer was incorrect.
+In this last phase, after providing the model of the CTMC I directly asked to `ChatGPT` to perform a simple simulation for verify the property and provide the predicted result, but also in this case it tried to perform some calculations based on wrong assumptions and so the answer was incorrect.
 
 ### Conclusions
 
-`ChatGPT 3.5` knows all the theoretical elements of PRISM and in general of CTMC and stochastic properties. It can understand PRISM syntax and so explain correctly a CTMC model or a stochastic property. So this LLM could be usefull for helping to understand a model or a property that which seems complicated to human's eye.
+`ChatGPT 3.5` knows all the theoretical elements of PRISM and in general of CTMC and stochastic properties. It can understand PRISM syntax and so explain correctly a CTMC model or a stochastic property. So this LLM could be usefull for helping to understand a model or a property which seems complicated to human's eye.
 
 Regarding the model checking howerver, `ChatGPT 3.5` is not usable at all, it always tries to make the user use other Model Checking tool and if it's forced to perform the check by itself, it tries to calculate mathematically the result following always a different and not solid approach that leads at wrong results. So it's not able to perform simple model checking or even predicting simulation's result.
 
