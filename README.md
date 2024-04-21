@@ -322,3 +322,30 @@ And using the **verify** option of PRISM we obtain the following result:
 
 ![PRISM Mutual Exclusion](img/PRISM-MutualExclusion.png)
 
+## Task 2 - LLM Stochastic Analysis
+
+In this task we'll try to investigate if an LLM know PRISM, can understand what the model of our CTMC does, and in general what is a stochastic property and if it can perform a simple model checking or preview what a simulation can produce.
+
+The LLM used in this task is `ChatGPT 3.5`.
+
+I started with a simple question for check if the LLM knows PRISM:
+
+> "Yes, PRISM (Probabilistic Symbolic Model Checker) is a tool used for the formal verification of probabilistic systems, particularly those involving probabilistic behavior and quantitative properties. It's widely used in academia and industry for analyzing systems like communication protocols, security protocols, biological systems, and more. PRISM allows you to model systems using probabilistic models such as Markov chains, Markov decision processes, and stochastic timed automata. It then enables you to specify properties of interest, such as reliability, performance, and security, and automatically checks whether these properties hold for the given model."
+
+Then I provided to `ChatGPT` the model definition of our CTMC with no other hints and it succesfully understood what general concept the model is representing:
+
+> "This model represents a system with resource allocation and usage, where resources move between different states based on certain conditions and probabilities. The rates or probabilities associated with each transition determine the dynamics of the system over time."
+
+After that, I asked to the LLM if it knows what a stochastic property is and what is its meaning:
+
+> "Yes, a stochastic property refers to a property or characteristic of a system that involves randomness or uncertainty. In the context of probabilistic systems such as Markov chains or Markov decision processes, stochastic properties often pertain to the likelihood or probability of certain events or conditions occurring within the system."
+
+It also mentioned some examples of stochastic properties such as **Reachability**, **Safety**, **Steady State** and so on.
+
+Then I specified that our system is modeling a Readers and Writers scenario and I asked for an interpretation of the following PRISM property: P=? [(true) U<=k (p6>0)] :
+
+> "The property you provided is a probabilistic reachability property, often expressed using the probabilistic computation tree logic (PCTL) notation. In details it means: what is the probability that, starting from any initial state, the system reaches a state where process reading the resource (p6) becomes positive within at most k steps?"
+
+It also explained how the PRISM syntax works.
+
+
