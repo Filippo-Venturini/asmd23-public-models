@@ -328,13 +328,11 @@ In this task we'll try to investigate if an LLM know PRISM, can understand what 
 
 The LLM used in this task is `ChatGPT 3.5`.
 
+### PRISM and theoretical knowledge
+
 I started with a simple question for check if the LLM knows PRISM:
 
 > "Yes, PRISM (Probabilistic Symbolic Model Checker) is a tool used for the formal verification of probabilistic systems, particularly those involving probabilistic behavior and quantitative properties. It's widely used in academia and industry for analyzing systems like communication protocols, security protocols, biological systems, and more. PRISM allows you to model systems using probabilistic models such as Markov chains, Markov decision processes, and stochastic timed automata. It then enables you to specify properties of interest, such as reliability, performance, and security, and automatically checks whether these properties hold for the given model."
-
-Then I provided to `ChatGPT` the model definition of our CTMC with no other hints and it succesfully understood what general concept the model is representing:
-
-> "This model represents a system with resource allocation and usage, where resources move between different states based on certain conditions and probabilities. The rates or probabilities associated with each transition determine the dynamics of the system over time."
 
 After that, I asked to the LLM if it knows what a stochastic property is and what is its meaning:
 
@@ -342,10 +340,67 @@ After that, I asked to the LLM if it knows what a stochastic property is and wha
 
 It also mentioned some examples of stochastic properties such as **Reachability**, **Safety**, **Steady State** and so on.
 
+Then I provided to `ChatGPT` the model definition of our CTMC with no other hints and it succesfully understood what general concept the model is representing:
+
+> "This model represents a system with resource allocation and usage, where resources move between different states based on certain conditions and probabilities. The rates or probabilities associated with each transition determine the dynamics of the system over time."
+
 Then I specified that our system is modeling a Readers and Writers scenario and I asked for an interpretation of the following PRISM property: P=? [(true) U<=k (p6>0)] :
 
 > "The property you provided is a probabilistic reachability property, often expressed using the probabilistic computation tree logic (PCTL) notation. In details it means: what is the probability that, starting from any initial state, the system reaches a state where process reading the resource (p6) becomes positive within at most k steps?"
 
 It also explained how the PRISM syntax works.
 
+### First approach : PRISM syntax
+
+In this phase I asked `ChatGPT` to calculate the probability of the following property: P=? [(true) U<=2 (p6>0)] (So the probability that a proccess is able to read the resource at most in 2 steps)
+
+The first approach was performed in the same chat used in the previous phase, so `ChatGPT` keeps rewriting the property with the syntax of PRISM and suggesting to use it for calculate it. After some tries I finally made `ChatGPT` try to compute it, but it provided the wrong answer:
+
+> "To calculate this probability, we need to consider all possible paths of the CTMC that reach state p6 within 2 steps. Given the structure of the CTMC and the transitions provided, we can see that the only way to reach state p6 within 2 steps is through the transition [t6], where p6 increases by 1 and p1 decreases by 1."
+
+And then it calculated the probability based on this assumption providing 0 as result. Basically it **misunderstood the transition t6** which has the opposite behaviour: p6 decreases by 1 and p1 increases by 1. (exit transition from the Reading state)
+
+I tried to correct the LLM but it keeped misunderstanding the request.
+
+### Second approach : words property
+
+I started a new conversation in which I just sent to ChatGPT the model of the CTMC without mentioning PRISM or making other question. Then I tried to ask to calculate the property with the following question:
+
+> "Given the model above, what is the probability that p6 is > 0 in at most 2 steps?"
+
+Here `ChatGPT` tried to analyze the probabilities that t4, t5 and t7 occur in at most two steps and it returned the following Python script for perform the calculations:
+
+```
+import numpy as np
+
+# Define the transition rates
+rate_t4 = 100000
+rate_t7 = 0.5
+
+# Function to calculate the probability of transition t6 within 2 steps
+def prob_t6(p6):
+    return 1 - np.exp(-(p6 * (p6 + 1) / 2) * 2)
+
+# Calculate the probabilities
+prob_t4 = 1 - np.exp(-rate_t4 * 2)
+prob_t6 = prob_t6(20)  # Maximum value of p6 is 20
+prob_t7 = 1 - np.exp(-rate_t7 * 2)
+
+# Sum up the probabilities
+total_prob = prob_t4 + prob_t6 + prob_t7
+
+print("Probability of p6 > 0 in at most 2 steps:", total_prob)
+```
+
+The above code return p = 2.63212 which is wrong.
+
+### Third approach: asking for a simulation
+
+In this last phase, after providing the model of the CTMC I directly asked to `ChatGPT` to perform a simple simulation for verify the property and provide the predicted result, but also in this case the answer was incorrect.
+
+### Conclusions
+
+`ChatGPT 3.5` knows all the theoretical elements of PRISM and in general of CTMC and stochastic properties. It can understand PRISM syntax and so explain correctly a CTMC model or a stochastic property. So this LLM could be usefull for helping to understand a model or a property that which seems complicated to human's eye.
+
+Regarding the model checking howerver, `ChatGPT 3.5` is not usable at all, it always tries to make the user use other Model Checking tool and if it's forced to perform the check by itself, it tries to calculate mathematically the result following always a different and not solid approach that leads at wrong results. So it's not able to perform simple model checking or even predicting simulation's result.
 
