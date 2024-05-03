@@ -14,9 +14,9 @@ object TryQMatrix extends App :
     terminal = {case _=>false},
     reward = { case ((1,0),DOWN) => 10; case ((3,0),DOWN) => 5; case _ => 0},
     jumps = { case ((1,0),DOWN) => (1,4); case ((3,0),DOWN) => (3,2) },
-    gamma = 0.9,
-    alpha = 0.5,
-    epsilon = 0.3,
+    gamma = 0.9, //Future reward importance
+    alpha = 0.5, //Past knowledge importance
+    epsilon = 0.3, //Exploration factor
     v0 = 1
   )
 
