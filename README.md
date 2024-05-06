@@ -415,7 +415,8 @@ The parameters considered are the following:
 - `gamma`: which control the weight of the rewards received in the future.
 - `alpha`: which regulate the importance of the knowledge already aquired compared to the new one. 
 - `epsilon`: that is the exploration factor, a large epsilon correspond to a more exploratory policy.
-- `grid size`: the size of the "map" that will make the learning more difficult.
+- `episodes`: the number of iterations used for train the agent.
+- `grid size`: the size of the "map" that will make the learning more easy or difficult.
 
 Here we can notice the policy learned with a balanced configuration of parameters such as:
 
@@ -483,4 +484,26 @@ And also the policy learned tends to be less precise in the bottom-right corner,
 
 But increasing the exploration factor more than 0.3 does not lead into any changes to the best policy learned and the v-table.
 
-### Grid size
+### Episodes
+
+Of course, if we decrease significally the numer of episodes used for the learning phase, the policy learned will be less precise especially in the bottom-right corner, here an example with **1000 episodes**:
+
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   ^   |   ^   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   ^   |   ^   |
+|   >   |   ^   |   <   |   ^   |   ^   |
+
+By using half of the default episodes we obtain less imprecision, but still not an accurate policy: here an example with **5000 episodes**:
+
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   ^   |
+|   >   |   ^   |   <   |   <   |   ^   |
+
+Of course, since with **10000 episodes** we already obtained the best policy, by increasing more the number of episodes we'll not gain any other advantages but just a slower learning phase.
