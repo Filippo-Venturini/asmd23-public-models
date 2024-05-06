@@ -423,11 +423,13 @@ Here we can notice the policy learned with a balanced configuration of parameter
 - `alpha`: 0.5
 - `epsilon`: 0.3
 
-$>$	      v	      <	      <	      < <br>
-$>$	      ^	      <	      <	      < <br>
-$>$	      ^	      <	      <	      < <br>
-$>$	      ^	      <	      <	      < <br>
-$>$	      ^	      <	      <	      < <br>
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |
 
 We notice that the agent always try to perform the jump for gain the respective reward of 10.
 
@@ -447,11 +449,13 @@ Here we'll modify the gamma value and see what happens to the learned policy.
 
 By using a value of **gamma = 0.5**, the agent will give a medium importance to the reward gained in the future and the policy changes as follows:
 
-$>$	      v	      <	      v	      < <br>
-$>$	      ^	      <	      ^	      < <br>
-$>$	      ^	      <	      ^	      < <br>
-$>$	      ^	      <	      ^	      < <br>
-$>$	      ^	      <	      ^	      ^ <br>
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   v   |   <   |
+|   >   |   ^   |   <   |   ^   |   <   |
+|   >   |   ^   |   <   |   ^   |   <   |
+|   >   |   ^   |   <   |   ^   |   <   |
+|   >   |   ^   |   <   |   ^   |   ^   |
 
 With this value now the agent is also considering the other jump that gives less reward. So in a given position if it's near to the second jump, the near reward has more importance.
 
