@@ -41,7 +41,7 @@ object QMatrix:
 
     def show[E](v: Node => E, formatString: String): String =
       (for
-        row <- 0 until width
-        col <- 0 until height
-      yield formatString.format(v((col, row))) + (if (col == height - 1) "\n" else "\t"))
+        row <- 0 until height
+        col <- 0 until width
+      yield formatString.format(v((col, row))) + (if (col == width - 1) "\n" else "\t"))
         .mkString("")
