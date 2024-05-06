@@ -431,6 +431,16 @@ $>$	      ^	      <	      <	      < <br>
 
 We notice that the agent always try to perform the jump for gain the respective reward of 10.
 
+And this is the corresponding **v-table**:
+
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+| 21,98 | 24,42 | 21,98 | 19,78 | 17,80 |
+| 19,78 | 21,98 | 19,78 | 17,80 | 16,02 |
+| 17,80 | 19,78 | 17,80 | 16,02 | 14,42 |
+| 16,02 | 17,80 | 16,02 | 14,42 | 12,98 |
+| 14,42 | 16,02 | 14,42 | 12,98 | 11,68 |
+
 ### Gamma
 
 Here we'll modify the gamma value and see what happens to the learned policy.
@@ -449,4 +459,24 @@ If we set **gamma = 0.1**, the policy learned is quite the same as the previous 
 
 ### Alpha
 
+By incrementing the weight of the already known information setting **alpha = 0.9** we don't obtain significant changes in the learned policy and even in the v-table values.
 
+Also by setting **alpha = 0.9** the best policy and the correspondent v-table are quite similar to the previous one.
+
+### Epsilon
+
+In this case decreasing the exploration factor lead to have a best policy that is worse than the previous one in the bottom-right corner of the grid:
+
+|       |       |       |       |       |
+|-------|-------|-------|-------|-------|
+| 21,98 | 24,42 | 21,98 | 19,78 | 16,65 |
+| 19,78 | 21,98 | 19,78 | 17,80 | 13,07 |
+| 17,80 | 19,78 | 17,80 | 16,02 | 14,42 |
+| 16,02 | 17,80 | 16,02 | 14,42 | 12,79 |
+| 14,42 | 16,02 | 14,42 | 12,98 |  6,23 |
+
+And also the policy learned tends to be less precise in the bottom-right corner, that happens because the agent will explore less new alternatives and if it starts in the bottom-right corner, it's far away from the jups and the rewards.
+
+But increasing the exploration factor more than 0.3 does not lead into any changes to the best policy learned and the v-table.
+
+### Grid size
