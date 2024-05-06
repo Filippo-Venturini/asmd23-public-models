@@ -404,3 +404,15 @@ In this last phase, after providing the model of the CTMC I directly asked to `C
 
 Regarding the model checking howerver, `ChatGPT 3.5` is not usable at all, it always tries to make the user use other Model Checking tool and if it's forced to perform the check by itself, it tries to calculate mathematically the result following always a different and not solid approach that leads at wrong results. So it's not able to perform simple model checking or even predicting simulation's result.
 
+# Lab 09 - Reinforcement Learning
+
+## Task 1 - Basic Q-Learning
+
+In this task the goal is to simply check how different configurations of the parameters changes the learning of the policy.
+
+The parameters considered are the following:
+
+`gamma`: which control the weight of the rewards received in the future.
+`alpha`: which regulate the importance of the knowledge already aquired compared to the new one. 
+`epsilon`: that is the exploration factor, a large epsilon correspond to a more exploratory policy.
+`grid size`: the size of the "map" that will make the learning more difficult.
