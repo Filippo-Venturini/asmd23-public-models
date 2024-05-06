@@ -412,7 +412,41 @@ In this task the goal is to simply check how different configurations of the par
 
 The parameters considered are the following:
 
-`gamma`: which control the weight of the rewards received in the future.
-`alpha`: which regulate the importance of the knowledge already aquired compared to the new one. 
-`epsilon`: that is the exploration factor, a large epsilon correspond to a more exploratory policy.
-`grid size`: the size of the "map" that will make the learning more difficult.
+- `gamma`: which control the weight of the rewards received in the future.
+- `alpha`: which regulate the importance of the knowledge already aquired compared to the new one. 
+- `epsilon`: that is the exploration factor, a large epsilon correspond to a more exploratory policy.
+- `grid size`: the size of the "map" that will make the learning more difficult.
+
+Here we can notice the policy learned with a balanced configuration of parameters such as:
+
+- `gamma`: 0.9
+- `alpha`: 0.5
+- `epsilon`: 0.3
+
+$>$	      v	      <	      <	      < <br>
+$>$	      ^	      <	      <	      < <br>
+$>$	      ^	      <	      <	      < <br>
+$>$	      ^	      <	      <	      < <br>
+$>$	      ^	      <	      <	      < <br>
+
+We notice that the agent always try to perform the jump for gain the respective reward of 10.
+
+### Gamma
+
+Here we'll modify the gamma value and see what happens to the learned policy.
+
+By using a value of **gamma = 0.5**, the agent will give a medium importance to the reward gained in the future and the policy changes as follows:
+
+$>$	      v	      <	      v	      < <br>
+$>$	      ^	      <	      ^	      < <br>
+$>$	      ^	      <	      ^	      < <br>
+$>$	      ^	      <	      ^	      < <br>
+$>$	      ^	      <	      ^	      ^ <br>
+
+With this value now the agent is also considering the other jump that gives less reward. So in a given position if it's near to the second jump, the near reward has more importance.
+
+If we set **gamma = 0.1**, the policy learned is quite the same as the previous scenario (so it consider also the second jump), but in terms of the **v-table** the values are high only in the cells with the jumps, despite the previous scenarios in which they were more distributed and generally higher in every cell.
+
+### Alpha
+
+
