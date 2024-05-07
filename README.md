@@ -507,3 +507,37 @@ By using half of the default episodes we obtain less imprecision, but still not 
 |   >   |   ^   |   <   |   <   |   ^   |
 
 Of course, since with **10000 episodes** we already obtained the best policy, by increasing more the number of episodes we'll not gain any other advantages but just a slower learning phase.
+
+## Grid size
+
+By increasing the grid size for example to a 10x10 grid, the policy learned lack of precision in the right part of the grid which is the farthest from the jumps:
+
+|       |       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   <   |   <   |   <   |   <   |   <   |   ^   |   <   |
+|   >   |   ^   |   <   |   <   |   ^   |   <   |   <   |   <   |   >   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   ^   |   >   |   ^   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   >   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   v   |   ^   |   >   |   >   |
+|   >   |   ^   |   <   |   ^   |   <   |   <   |   <   |   ^   |   v   |   <   |
+|   >   |   ^   |   ^   |   <   |   ^   |   <   |   v   |   v   |   ^   |   >   |
+|   >   |   ^   |   ^   |   <   |   <   |   <   |   >   |   >   |   <   |   v   |
+|   ^   |   ^   |   ^   |   ^   |   v   |   ^   |   v   |   v   |   >   |   >   |
+|   ^   |   ^   |   ^   |   >   |   <   |   v   |   v   |   ^   |   <   |   >   |
+
+For obtain a precise policy we necessarily need to increase the **epsilon** parameter, to increase the exploration factor. Only with **epsilon = 0.9** we obtain a perfect scaled policy:
+
+|       |       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   >   |   v   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+|   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
+
+
