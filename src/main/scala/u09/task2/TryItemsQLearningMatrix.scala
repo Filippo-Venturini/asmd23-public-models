@@ -1,6 +1,7 @@
 package scala.u09.task2
 
 import scala.u09.task2.ExtendedQMatrix.Facade
+import scala.u09.task2.ExtendedQMatrix.Move
 import scala.u09.task2.ExtendedQMatrix.Move.*
 
 object TryItemsQLearningMatrix extends App:
@@ -32,9 +33,7 @@ object TryItemsQLearningMatrix extends App:
 
   val q0 = rlItems.qFunction
   println(rlItems.show(q0.vFunction, "%2.2f"))
-  val q1 = rlItems.makeLearningInstance().learn(10000, 100, q0)
+  val q1 = rlItems.makeLearningInstance().learn(10000, 1000, q0)
   println(rlItems.show(q1.vFunction, "%2.2f"))
-  println("Q: " + q1.bestPolicy((1,2)))
-  println("V: " + q1.vFunction((1,2)))
   println(rlItems.show(s => if rlItems.itemsToCollect.contains(s) then "$" else q1.bestPolicy(s).toString, "%7s"))
 
