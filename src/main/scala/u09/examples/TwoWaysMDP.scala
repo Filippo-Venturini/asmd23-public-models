@@ -26,10 +26,10 @@ object TwoWaysMDP:
         (Move.RIGHT, 1, penalty, if n == maxRight then Pos(n) else Pos(n + 1)))
 
     def qfTW() = QFunction(Move.values.toSet, 1.0, terminalTW)
-    def rlTW() = QLearning(
+    /*def rlTW() = QLearning(
       system = QSystem(mdpTW(), Pos(0), terminalTW),
       gamma = 0.9,
       alpha = 0.5,
       epsilon = 0.0,
       q0 = qfTW()
-    )
+    )*/

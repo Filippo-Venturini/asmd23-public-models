@@ -2,6 +2,7 @@ package u09.model
 
 import annotation.tailrec
 import collection.immutable
+import scala.u09.task2.ExtendedQMatrix.Facade
 
 trait QRLImpl extends QRL:
 
@@ -34,8 +35,8 @@ trait QRLImpl extends QRL:
   case class QSystem(
                       override val environment: Environment,
                       override val initial: State,
-                      override val terminal: State => Boolean) extends System:
-
+                      override val terminal: State => Boolean,
+                      override val resetFunction: ResetFunction) extends System:
     final override def run(p: Policy): LazyList[(Action, State)] =
       immutable.LazyList.iterate((initial, p(initial), initial)):
         case (_, a, s2) => val a2 = p(s2); (s2, a2, environment(s2, a2)._2)
@@ -61,11 +62,13 @@ trait QRLImpl extends QRL:
 
     @tailrec
     final override def learn(episodes: Int, length: Int, qf: Q): Q =
+      system.resetFunction.execute()
       @tailrec
       def runSingleEpisode(in: (State, Q), episodeLength: Int): (State, Q) =
-        if episodeLength == 0 || system.terminal(in._1)
+          if episodeLength == 0 || system.terminal(in._1)
           then in
           else runSingleEpisode(updateQ(in._1, in._2), episodeLength - 1)
+
 
       episodes match
         case 0 => qf
