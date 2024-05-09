@@ -6,7 +6,7 @@ import scala.u09.task2.ExtendedQMatrix.Move.*
 
 object TryItemsQLearningMatrix extends App:
   var totalItems = Set((1,1), (3,3), (7,2))
-  var items = Set((1,1), (3,3), (7,2))
+  var remainingItems = Set((1,1), (3,3), (7,2))
   val rlItems: ExtendedQMatrix.Facade = Facade(
     width = 9,
     height = 6,
@@ -14,20 +14,18 @@ object TryItemsQLearningMatrix extends App:
     terminal = {case (7,2) => true; case _ => false},
     jumps = { PartialFunction.empty },
     reward = {
-      case (s, a) if totalItems.contains(s) && !items.contains(s) => (totalItems.size-items.size + 1) * -4
-      case(s, a) if items.contains(s) =>
-        //print("Before: " + items)
-        items = items - s
-        //print("After: " + items)
-        (totalItems.size-items.size + 1) * 20
+      case (s, a) if totalItems.contains(s) && !remainingItems.contains(s) => (totalItems.size-remainingItems.size + 1) * -4
+      case(s, a) if remainingItems.contains(s) =>
+        remainingItems = remainingItems - s
+        (totalItems.size-remainingItems.size + 1) * 20
       case _ => 0
     },
     obstacles = Set.empty,
-    itemsToCollect = items,
+    itemsToCollect = remainingItems,
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.8, //Exploration factor
-    prova = () => {items = items ++ totalItems;},
+    resetMap = () => {remainingItems = remainingItems ++ totalItems;},
     v0 = 1
   )
 

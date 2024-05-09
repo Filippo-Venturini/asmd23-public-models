@@ -25,7 +25,7 @@ object ExtendedQMatrix:
                      gamma: Double,
                      alpha: Double,
                      epsilon: Double = 0.0,
-                     prova: ResetFunction,
+                     resetMap: ResetFunction,
                      v0: Double) extends QRLImpl:
     type State = Node
     type Action = Move
@@ -42,7 +42,7 @@ object ExtendedQMatrix:
       (reward.apply((s, a)), jumps.orElse[(Node, Move), Node](_ => n2)(s, a))
 
     def qFunction = QFunction(Move.values.toSet, v0, terminal, 140)
-    def qSystem = QSystem(environment = qEnvironment(), initial, terminal, prova)
+    def qSystem = QSystem(environment = qEnvironment(), initial, terminal, resetMap)
     def makeLearningInstance() = QLearning(qSystem, gamma, alpha, epsilon, qFunction)
 
     def show[E](v: Node => E, formatString: String): String =

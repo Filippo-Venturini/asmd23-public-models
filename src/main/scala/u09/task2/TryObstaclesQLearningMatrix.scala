@@ -18,7 +18,7 @@ object TryObstaclesQLearningMatrix extends App:
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.3, //Exploration factor
-    prova = () => (),
+    resetMap = () => (),
     v0 = 1
   )
 
