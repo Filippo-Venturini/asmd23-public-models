@@ -12,7 +12,6 @@ object TryObstaclesQLearningMatrix extends App:
     initial = (0,1),
     terminal = {case _=>false},
     jumps = { PartialFunction.empty },
-    reward = { case((9, 1), _) => 1; case (s, _) if mapObstacles.contains(s) => -10; case _ => 0},
     obstacles = mapObstacles,
     itemsToCollect = Set.empty,
     gamma = 0.9, //Future reward importance
@@ -21,6 +20,13 @@ object TryObstaclesQLearningMatrix extends App:
     resetMap = () => (),
     v0 = 1
   )
+
+  rlObstacles.reward = {
+    case((9, 1), _) => 1;
+    case (s, _) if mapObstacles.contains(s) => -10;
+    case ((x, y), a) if (x == 0 && a == LEFT) || (y == 0 && a == UP) || (x == rlObstacles.width-1 && a == RIGHT) || (y == rlObstacles.height-1 && a == DOWN) =>
+      -10
+    case _ => 0}
 
   val q0 = rlObstacles.qFunction
   println(rlObstacles.show(q0.vFunction,"%2.2f"))

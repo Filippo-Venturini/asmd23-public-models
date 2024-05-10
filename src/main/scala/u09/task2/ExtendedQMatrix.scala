@@ -18,7 +18,6 @@ object ExtendedQMatrix:
                      height: Int,
                      initial: Node,
                      terminal: PartialFunction[Node, Boolean],
-                     reward: PartialFunction[(Node, Move), Double],
                      jumps: PartialFunction[(Node, Move), Node],
                      obstacles: Set[Node],
                      itemsToCollect: Set[Node],
@@ -29,6 +28,8 @@ object ExtendedQMatrix:
                      v0: Double) extends QRLImpl:
     type State = Node
     type Action = Move
+
+    var reward: PartialFunction[(Node, Move), Double] = null
 
     def qEnvironment(): Environment = (s: Node, a: Move) =>
       // applies direction, without escaping borders

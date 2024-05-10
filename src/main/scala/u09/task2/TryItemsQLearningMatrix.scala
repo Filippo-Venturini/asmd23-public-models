@@ -13,13 +13,6 @@ object TryItemsQLearningMatrix extends App:
     initial = (0, 1),
     terminal = {case (7,2) => true; case _ => false},
     jumps = { PartialFunction.empty },
-    reward = {
-      case (s, a) if totalItems.contains(s) && !remainingItems.contains(s) => (totalItems.size-remainingItems.size + 1) * -4
-      case(s, a) if remainingItems.contains(s) =>
-        remainingItems = remainingItems - s
-        (totalItems.size-remainingItems.size + 1) * 20
-      case _ => 0
-    },
     obstacles = Set.empty,
     itemsToCollect = remainingItems,
     gamma = 0.9, //Future reward importance
@@ -28,6 +21,16 @@ object TryItemsQLearningMatrix extends App:
     resetMap = () => {remainingItems = remainingItems ++ totalItems;},
     v0 = 1
   )
+
+  rlItems.reward = {
+    case (s, a) if totalItems.contains(s) && !remainingItems.contains(s) => (totalItems.size - remainingItems.size + 1) * -4
+    case (s, a) if remainingItems.contains(s) =>
+      remainingItems = remainingItems - s
+      (totalItems.size - remainingItems.size + 1) * 20
+    case ((x, y), a) if (x == 0 && a == LEFT) || (y == 0 && a == UP) || (x == rlItems.width-1 && a == RIGHT) || (y == rlItems.height-1 && a == DOWN) =>
+      -10
+    case _ => 0
+  }
 
   val q0 = rlItems.qFunction
   println(rlItems.show(q0.vFunction, "%2.2f"))
