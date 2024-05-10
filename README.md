@@ -562,7 +562,7 @@ The goal is achieved through the following steps:
 
 - At that point we introduce a new parameter that holds the positions of the obstacles and we simply assign a negative reward when the agent goes in an obstacle's cell.
 
-The best policy learned avoid correctly the obstacles:
+The best policy learned avoid correctly the obstacles, the agent start from (1,0) and try to go to (9,1), the obstacles are annotated with `*`:
 
 |       |       |       |       |       |       |       |       |       |       |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
@@ -570,3 +570,26 @@ The best policy learned avoid correctly the obstacles:
 |   >   |   >   |   >   |   >   |   ^   |   *   |   >   |   >   |   >   |   >   |
 |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |
 |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |
+
+
+## Items
+
+Now we want the agent to collect different items and stay where the final item is located.
+
+Here we have the problem that the rewards are not static, we are in a situation in which when an item is not collected yet
+the cell has a high expected reward, but the same cell has to have less importance after the item is collected.
+
+Moreover, after every episode, we need a way for reset the map to the initial configuration of items.
+
+So the following steps are followed:
+
+- The type `ResetFunction` is created, it consists in a `Unit` function that is called before each training episode and reset the map (relocating the items).
+
+- Then we have to memorize the locations of all the **items** and also of the **remaining items** (not collected yet)
+
+- Now we can define our **reward structure** in a way in which we get an incremental reward for each item depending on how many items the agent already has collected
+(first item = 10, second item = 20, third item = 30)
+
+- After the agent collect an item, the item is removed and the reward of the cell become 0
+
+- Then to incentivize the agent to go on after collecting an item, a rule is added to the reward structure, that give negative rewards if the agent stay in a cell where there was an item (also weighted by the number of items already collected)
