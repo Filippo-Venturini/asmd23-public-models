@@ -11,6 +11,7 @@ object TryObstaclesQLearningMatrix extends App:
     height = 4,
     initial = (0,1),
     terminal = {case _=>false},
+    terminalValue = 0.0,
     jumps = { PartialFunction.empty },
     obstacles = mapObstacles,
     itemsToCollect = Set.empty,

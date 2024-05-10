@@ -8,7 +8,8 @@ object TryEnemyQLearningMatrix extends App:
     width = 10,
     height = 10,
     initial = (0, 1),
-    terminal = { case _ => false },
+    terminal = { case (9,4) => true; case _ => false },
+    terminalValue = 10.0,
     jumps = { PartialFunction.empty },
     obstacles = Set.empty,
     itemsToCollect = Set.empty,
@@ -22,10 +23,10 @@ object TryEnemyQLearningMatrix extends App:
     case ((9,4), _) => 10
     case ((x, y), a) if (x == 0 && a == LEFT) || (y == 0 && a == UP) || (x == rlEnemy.width - 1 && a == RIGHT) || (y == rlEnemy.height - 1 && a == DOWN) =>
       -1
-    case (s, a) if rlEnemy.getNeighbors(rlEnemy.enemy, 1).contains(s) => -10
+    case (s, a) if rlEnemy.getNeighbors(rlEnemy.enemy, 1).contains(s) => -100
     case _ => 0
   }
-  
+
   rlEnemy.resetMap = () => { rlEnemy.enemy = (rlEnemy.width - 2, rlEnemy.height - 2); rlEnemy.enemyPositions = List.empty }
 
   val q0 = rlEnemy.qFunction

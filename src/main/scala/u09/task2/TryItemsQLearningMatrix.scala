@@ -12,6 +12,7 @@ object TryItemsQLearningMatrix extends App:
     height = 6,
     initial = (0, 1),
     terminal = {case (7,2) => true; case _ => false},
+    terminalValue= 140.0,
     jumps = { PartialFunction.empty },
     obstacles = Set.empty,
     itemsToCollect = remainingItems,

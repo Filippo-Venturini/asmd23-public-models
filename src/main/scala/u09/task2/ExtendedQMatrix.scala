@@ -18,6 +18,7 @@ object ExtendedQMatrix:
                      height: Int,
                      initial: Node,
                      terminal: PartialFunction[Node, Boolean],
+                     terminalValue: Double,
                      jumps: PartialFunction[(Node, Move), Node],
                      obstacles: Set[Node],
                      itemsToCollect: Set[Node],
@@ -29,8 +30,8 @@ object ExtendedQMatrix:
     type Action = Move
     type Enemy = Node
 
-    var reward: PartialFunction[(Node, Move), Double] = null
-    var resetMap: ResetFunction = null
+    var reward: PartialFunction[(Node, Move), Double] = PartialFunction.empty
+    var resetMap: ResetFunction = () => ()
     var enemy: Enemy = (width - 2, height - 2)
     var enemyPositions: List[Enemy] = List.empty
 
@@ -43,7 +44,7 @@ object ExtendedQMatrix:
         case ((n1, n2), LEFT) => ((n1 - 1) max 0, n2)
         case ((n1, n2), RIGHT) => ((n1 + 1) min (width - 1), n2)
 
-    def getNeighbors(n: Node, radius: Int): List[Node] = 
+    def getNeighbors(n: Node, radius: Int): List[Node] =
       val neighbors = for {
         i <- (n._1 - radius) to (n._1 + radius)
         j <- (n._2 - radius) to (n._2 + radius)
@@ -62,7 +63,7 @@ object ExtendedQMatrix:
       // computes rewards, and possibly a jump
       (reward.apply((s, a)), jumps.orElse[(Node, Move), Node](_ => n2)(s, a))
 
-    def qFunction = QFunction(Move.values.toSet, v0, terminal, 140)
+    def qFunction = QFunction(Move.values.toSet, v0, terminal, terminalValue)
     def qSystem = QSystem(environment = qEnvironment(), initial, terminal, resetMap)
     def makeLearningInstance() = QLearning(qSystem, gamma, alpha, epsilon, qFunction)
 
