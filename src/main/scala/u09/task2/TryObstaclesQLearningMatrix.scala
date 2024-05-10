@@ -35,4 +35,5 @@ object TryObstaclesQLearningMatrix extends App:
   println(rlObstacles.show(q0.vFunction,"%2.2f"))
   val q1 = rlObstacles.makeLearningInstance().learn(10000,100,q0)
   println(rlObstacles.show(q1.vFunction,"%2.2f"))
+  println("\n############################ BEST POLICY ##############################\n")
   println(rlObstacles.show(s => if rlObstacles.obstacles.contains(s) then "*" else q1.bestPolicy(s).toString,"%7s"))

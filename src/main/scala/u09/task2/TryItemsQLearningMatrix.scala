@@ -38,5 +38,20 @@ object TryItemsQLearningMatrix extends App:
   println(rlItems.show(q0.vFunction, "%2.2f"))
   val q1 = rlItems.makeLearningInstance().learn(10000, 1000, q0)
   println(rlItems.show(q1.vFunction, "%2.2f"))
+
+  println("\n############################ BEST POLICY ##############################\n")
+
   println(rlItems.show(s => if rlItems.itemsToCollect.contains(s) then "$" else q1.bestPolicy(s).toString, "%7s"))
+
+  val agentPath = rlItems.qSystem.run(q1.bestPolicy).take(30)
+
+  agentPath.toList.zipWithIndex.map {
+    case ((e1, e2), index) => (e1, if (index == 0) e2 else agentPath(index - 1)._2)
+  }
+
+  println("################################ RUN ##################################\n")
+
+  println(rlItems.show(s => {
+    if rlItems.itemsToCollect.contains(s) then "$" else agentPath.find((ac, st) => st == s).map((ac, st) => ac).getOrElse(".")
+  }, "%7s"))
 

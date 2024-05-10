@@ -540,4 +540,33 @@ For obtain a precise policy we necessarily need to increase the **epsilon** para
 |   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
 |   >   |   ^   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |   <   |
 
+## Task 2 - Design by Q-Learning
 
+In this task the goal is do make the agent learn brand-new behaviours in a more complex environment, such as obstacles to avoid,
+items to collect or enemies to stays away from.
+
+All the following implementations are based on an extension of the `QMatrix` implementation that can be found at: *scala.u09.task2.ExtendedQMatrix.scala*
+
+### Obstacles
+
+The code of the following implementation can be found at: *scala.u09.task2.TryObstaclesQLearningMatrix.scala*
+
+Here the goal is to realize a corridor and make an agent starting from the left and going to the right until it reach the end
+but **avoiding** some fixed **obstacles**.
+
+The goal is achieved through the following steps:
+
+- First of all we have to set the destination cell of the map as the cell with the maximum reward (1 is enough) for make the agent go to the right.
+
+- Then, of course, the agent has to not go out of the map, so we assign a negative reward for try to go out of the boundaries.
+
+- At that point we introduce a new parameter that holds the positions of the obstacles and we simply assign a negative reward when the agent goes in an obstacle's cell.
+
+The best policy learned avoid correctly the obstacles:
+
+|       |       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   >   |   >   |   v   |   *   |   >   |   >   |   >   |   >   |   >   |   v   |
+|   >   |   >   |   >   |   >   |   ^   |   *   |   >   |   >   |   >   |   >   |
+|   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |
+|   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |

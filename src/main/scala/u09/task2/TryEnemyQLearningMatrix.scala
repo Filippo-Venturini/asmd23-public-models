@@ -33,6 +33,8 @@ object TryEnemyQLearningMatrix extends App:
   println(rlEnemy.show(q0.vFunction, "%2.2f"))
   val q1 = rlEnemy.makeLearningInstance().learn(10000, 100, q0)
   println(rlEnemy.show(q1.vFunction, "%2.2f"))
+
+  println("\n############################ BEST POLICY ##############################\n")
   println(rlEnemy.show(s => q1.bestPolicy(s).toString, "%7s"))
 
   val agentPath = rlEnemy.qSystem.run(q1.bestPolicy).take(30)
@@ -40,6 +42,8 @@ object TryEnemyQLearningMatrix extends App:
   agentPath.toList.zipWithIndex.map {
     case ((e1, e2), index) => (e1, if(index == 0) e2 else agentPath(index - 1)._2)
   }
+
+  println("################################ RUN ##################################\n")
 
   println(rlEnemy.show(s => {
     if rlEnemy.enemyPositions.contains(s) then "@" else agentPath.find((ac, st) => st == s).map((ac, st) => ac).getOrElse(".")
