@@ -7,7 +7,7 @@ object TryEnemyQLearningMatrix extends App:
   val rlEnemy: ExtendedQMatrix.Facade = Facade(
     width = 10,
     height = 10,
-    initial = (0, 1),
+    initial = (0, 4),
     terminal = { case (9,4) => true; case _ => false },
     terminalValue = 10.0,
     jumps = { PartialFunction.empty },
@@ -27,7 +27,7 @@ object TryEnemyQLearningMatrix extends App:
     case _ => 0
   }
 
-  rlEnemy.resetMap = () => { rlEnemy.enemy = (rlEnemy.width - 2, rlEnemy.height - 2); rlEnemy.enemyPositions = List.empty }
+  rlEnemy.resetMap = () => { rlEnemy.enemy = (rlEnemy.width / 2, rlEnemy.height / 2); rlEnemy.enemyPositions = List.empty; rlEnemy.patrolPattern = LazyList.continually(List(LEFT, LEFT, LEFT, UP, UP, UP, RIGHT, RIGHT, RIGHT, DOWN, DOWN, DOWN)).flatten }
 
   val q0 = rlEnemy.qFunction
   println(rlEnemy.show(q0.vFunction, "%2.2f"))
@@ -44,4 +44,3 @@ object TryEnemyQLearningMatrix extends App:
   println(rlEnemy.show(s => {
     if rlEnemy.enemyPositions.contains(s) then "@" else agentPath.find((ac, st) => st == s).map((ac, st) => ac).getOrElse(".")
   }, "%7s"))
-
