@@ -43,7 +43,7 @@ object ExtendedQMatrix:
         case ((n1, n2), LEFT) => ((n1 - 1) max 0, n2)
         case ((n1, n2), RIGHT) => ((n1 + 1) min (width - 1), n2)
 
-    def getNeighbors(n: Node, radius: Int): List[Node] = {
+    def getNeighbors(n: Node, radius: Int): List[Node] = 
       val neighbors = for {
         i <- (n._1 - radius) to (n._1 + radius)
         j <- (n._2 - radius) to (n._2 + radius)
@@ -51,7 +51,6 @@ object ExtendedQMatrix:
         if math.abs(n._1 - i) + math.abs(n._2 - j) <= radius
       } yield (i, j)
       neighbors.toList
-    }
 
     def qEnvironment(): Environment = (s: Node, a: Move) =>
       // applies direction, without escaping borders
