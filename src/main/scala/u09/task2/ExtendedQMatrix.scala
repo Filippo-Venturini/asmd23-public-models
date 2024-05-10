@@ -24,21 +24,42 @@ object ExtendedQMatrix:
                      gamma: Double,
                      alpha: Double,
                      epsilon: Double = 0.0,
-                     resetMap: ResetFunction,
                      v0: Double) extends QRLImpl:
     type State = Node
     type Action = Move
+    type Enemy = Node
 
     var reward: PartialFunction[(Node, Move), Double] = null
+    var resetMap: ResetFunction = null
+    var enemy: Enemy = (width - 2, height - 2)
+    var enemyPositions: List[Enemy] = List.empty
 
-    def qEnvironment(): Environment = (s: Node, a: Move) =>
-      // applies direction, without escaping borders
-      val n2: Node = (s, a) match
+    private def getRandomAction: Action =
+      Move.values.toList(util.Random.nextInt(Move.values.length))
+
+    private def move(s: Node, a: Move): Node = (s, a) match
         case ((n1, n2), UP) => (n1, (n2 - 1) max 0)
         case ((n1, n2), DOWN) => (n1, (n2 + 1) min (height - 1))
         case ((n1, n2), LEFT) => ((n1 - 1) max 0, n2)
         case ((n1, n2), RIGHT) => ((n1 + 1) min (width - 1), n2)
-        //case _ => ???
+
+    def getNeighbors(n: Node, radius: Int): List[Node] = {
+      val neighbors = for {
+        i <- (n._1 - radius) to (n._1 + radius)
+        j <- (n._2 - radius) to (n._2 + radius)
+        if i >= 0 && i < width && j >= 0 && j < height
+        if math.abs(n._1 - i) + math.abs(n._2 - j) <= radius
+      } yield (i, j)
+      neighbors.toList
+    }
+
+    def qEnvironment(): Environment = (s: Node, a: Move) =>
+      // applies direction, without escaping borders
+      val n2: Node = move(s, a)
+
+      enemyPositions = enemyPositions :+ enemy
+      enemy = move(enemy, getRandomAction)
+
       // computes rewards, and possibly a jump
       (reward.apply((s, a)), jumps.orElse[(Node, Move), Node](_ => n2)(s, a))
 

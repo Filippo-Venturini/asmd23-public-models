@@ -17,7 +17,6 @@ object TryObstaclesQLearningMatrix extends App:
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.3, //Exploration factor
-    resetMap = () => (),
     v0 = 1
   )
 
@@ -26,7 +25,10 @@ object TryObstaclesQLearningMatrix extends App:
     case (s, _) if mapObstacles.contains(s) => -10;
     case ((x, y), a) if (x == 0 && a == LEFT) || (y == 0 && a == UP) || (x == rlObstacles.width-1 && a == RIGHT) || (y == rlObstacles.height-1 && a == DOWN) =>
       -10
-    case _ => 0}
+    case _ => 0
+  }
+
+  rlObstacles.resetMap = {() => rlObstacles.enemyPositions = List.empty}
 
   val q0 = rlObstacles.qFunction
   println(rlObstacles.show(q0.vFunction,"%2.2f"))

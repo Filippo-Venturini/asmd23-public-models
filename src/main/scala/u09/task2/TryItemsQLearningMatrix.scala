@@ -18,7 +18,6 @@ object TryItemsQLearningMatrix extends App:
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.8, //Exploration factor
-    resetMap = () => {remainingItems = remainingItems ++ totalItems;},
     v0 = 1
   )
 
@@ -31,6 +30,8 @@ object TryItemsQLearningMatrix extends App:
       -10
     case _ => 0
   }
+
+  rlItems.resetMap = () => {remainingItems = remainingItems ++ totalItems; rlItems.enemyPositions = List.empty}
 
   val q0 = rlItems.qFunction
   println(rlItems.show(q0.vFunction, "%2.2f"))
