@@ -542,7 +542,7 @@ For obtain a precise policy we necessarily need to increase the **epsilon** para
 
 ## Task 2 - Design by Q-Learning
 
-In this task the goal is do make the agent learn brand-new behaviours in a more complex environment, such as obstacles to avoid,
+In this task the goal is to make the agent learn brand-new behaviours in a more complex environment, such as obstacles to avoid,
 items to collect or enemies to stays away from.
 
 All the following implementations are based on an extension of the `QMatrix` implementation that can be found at: *scala.u09.task2.ExtendedQMatrix.scala*
@@ -576,12 +576,14 @@ The best policy learned avoid correctly the obstacles, the agent start from (1,0
 
 Now we want the agent to collect different items and stay where the final item is located.
 
+The code of the following implementation can be found at: *scala.u09.task2.TryItemsQLearningMatrix.scala*
+
 Here we have the problem that the rewards are not static, we are in a situation in which when an item is not collected yet
 the cell has a high expected reward, but the same cell has to have less importance after the item is collected.
 
 Moreover, after every episode, we need a way for reset the map to the initial configuration of items.
 
-So the following steps are followed:
+So the succeeding steps are followed:
 
 - The type `ResetFunction` is created, it consists in a `Unit` function that is called before each training episode and reset the map (relocating the items).
 
@@ -593,3 +595,82 @@ So the following steps are followed:
 - After the agent collect an item, the item is removed and the reward of the cell become 0
 
 - Then to incentivize the agent to go on after collecting an item, a rule is added to the reward structure, that give negative rewards if the agent stay in a cell where there was an item (also weighted by the number of items already collected)
+
+|       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   >   |   v   |   v   |   v   |   v   |   >   |   >   |   v   |   <   |
+|   >   |   $   |   <   |   v   |   v   |   >   |   >   |   v   |   <   |
+|   v   |   >   |   >   |   v   |   >   |   >   |   >   |   $   |   <   |
+|   >   |   >   |   >   |   $   |   ^   |   >   |   >   |   ^   |   <   |
+|   >   |   ^   |   >   |   ^   |   ^   |   ^   |   >   |   ^   |   <   |
+|   >   |   >   |   ^   |   ^   |   ^   |   ^   |   >   |   ^   |   <   |
+
+The policy above is one of the best obtained, but if we run multiple times the system, we can notice some imperfection.
+
+Let's analyze the **v-table**:
+
+|       |        |        |        |        |        |        |        |        |
+|-------|--------|--------|--------|--------|--------|--------|--------|--------|
+| 70,00 | 72,97  | 76,30  | 82,33  | 82,67  | 91,85  | 102,06 | 113,40 | 102,06 |
+| 80,81 | 97,22  | 83,53  | 95,30  | 91,85  | 102,06 | 113,40 | 126,00 | 113,40 |
+| 73,24 | 78,10  | 92,80  | 107,07 | 102,06 | 113,40 | 126,00 | 140,00 | 126,00 |
+| 81,78 | 79,31  | 112,45 | 122,23 | 91,85  | 102,06 | 113,40 | 126,00 | 113,40 |
+| 73,72 | 74,96  | 81,72  | 99,80  | 83,02  | 91,85  | 102,06 | 113,40 | 102,06 |
+| 66,48 | 74,50  | 75,96  | 81,23  | 81,73  | 82,68  | 91,85  | 102,06 | 91,85  |
+
+Here the perfect v-table should have high and incremental values all over the shortest path that connect the items and low values out of the path.
+In our policy we have some "incremental areas" but is difficult to obtain something better.
+
+## Enemy
+
+In this last part the goal is to make the agent learn how to reach a point in the map but avoiding an enemy that is patrolling an area.
+
+The code of the following implementation can be found at: *scala.u09.task2.TryEnemyQLearningMatrix.scala*
+
+First of all we extended the implementation of the `ExtendedQMatrix` by adding the concept of `Enemy` that is simply a `Node`
+
+Then we designed a pattern for the enemy patrolling that consist in a square 3x3:
+
+```
+var patrolPattern: LazyList[Action] = LazyList.continually(List(LEFT, LEFT, LEFT, UP, UP, UP, RIGHT, RIGHT, RIGHT, DOWN, DOWN, DOWN)).flatten
+```
+
+Then we extracted a method for perform one movement in the grid, and each time that the agent moves, also the enemy moves following the pattern.
+
+After that we used the previous implementation for reset the enemy's initial position after each episode of learning.
+
+We also keep track of every position reached by the enemy.
+
+The **reward structure** is the following:
+
+- One point is the goal of the agent and has a positive reward
+- A negative reward is assigned every time the agent try to go out of the grid
+- If the agent goes in a cell that is contained in the neighborhood (at distance 1) of the enemy a negative reward is assigned
+
+For have a more clear interpretation of the result we coded a way for show a single run after the learning:
+
+```
+val agentPath = rlEnemy.qSystem.run(q1.bestPolicy).take(30)
+
+println(rlEnemy.show(s => {
+    if rlEnemy.enemyPositions.contains(s) then "@" else agentPath.find((ac, st) => st == s).map((ac, st) => ac).getOrElse(".")
+  }, "%7s"))
+```
+
+So we obtain the following output, which use the following symbols:
+- `.`:
+- `>`:
+- `@`:
+
+|       |       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   @   |   @   |   @   |   @   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   @   |   .   |   .   |   @   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   @   |   .   |   .   |   @   |   .   |   .   |   .   |   ^   |
+|   v   |   .   |   @   |   @   |   @   |   @   |   .   |   .   |   .   |   ^   |
+|   v   |   >   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   ^   |
+|   .   |   v   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
