@@ -643,9 +643,9 @@ We also keep track of every position reached by the enemy.
 
 The **reward structure** is the following:
 
-- One point is the goal of the agent and has a positive reward
+- One node in the grid is the goal of the agent and has a positive reward
 - A negative reward is assigned every time the agent try to go out of the grid
-- If the agent goes in a cell that is contained in the neighborhood (at distance 1) of the enemy a negative reward is assigned
+- If the agent goes in a cell that is contained in the neighborhood (at distance 1) of the actual position of the enemy a negative reward is assigned
 
 For have a more clear interpretation of the result we coded a way for show a single run after the learning:
 
@@ -658,9 +658,9 @@ println(rlEnemy.show(s => {
 ```
 
 So we obtain the following output, which use the following symbols:
-- `.`:
-- `>`:
-- `@`:
+- `.`: empty cell of the map
+- `>`: direction of the agent in the specific cell
+- `@`: patrolling area of the enemy
 
 |       |       |       |       |       |       |       |       |       |       |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|

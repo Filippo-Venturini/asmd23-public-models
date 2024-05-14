@@ -16,6 +16,7 @@ object TryItemsQLearningMatrix extends App:
     jumps = { PartialFunction.empty },
     obstacles = Set.empty,
     itemsToCollect = remainingItems,
+    enemy = Option.empty,
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.8, //Exploration factor

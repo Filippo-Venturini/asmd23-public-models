@@ -13,6 +13,7 @@ object TryEnemyQLearningMatrix extends App:
     jumps = { PartialFunction.empty },
     obstacles = Set.empty,
     itemsToCollect = Set.empty,
+    enemy = Some(5, 5),
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.8, //Exploration factor
@@ -23,11 +24,11 @@ object TryEnemyQLearningMatrix extends App:
     case ((9,4), _) => 10
     case ((x, y), a) if (x == 0 && a == LEFT) || (y == 0 && a == UP) || (x == rlEnemy.width - 1 && a == RIGHT) || (y == rlEnemy.height - 1 && a == DOWN) =>
       -1
-    case (s, a) if rlEnemy.getNeighbors(rlEnemy.enemy, 1).contains(s) => -100
+    case (s, a) if rlEnemy.getNeighbors(rlEnemy.actualEnemyPosition, 1).contains(s) => -100
     case _ => 0
   }
 
-  rlEnemy.resetMap = () => { rlEnemy.enemy = (rlEnemy.width / 2, rlEnemy.height / 2); rlEnemy.enemyPositions = List.empty; rlEnemy.patrolPattern = LazyList.continually(List(LEFT, LEFT, LEFT, UP, UP, UP, RIGHT, RIGHT, RIGHT, DOWN, DOWN, DOWN)).flatten }
+  rlEnemy.resetMap = () => { rlEnemy.resetEnemy }
 
   val q0 = rlEnemy.qFunction
   println(rlEnemy.show(q0.vFunction, "%2.2f"))
