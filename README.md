@@ -567,8 +567,8 @@ The best policy learned avoid correctly the obstacles, the agent start from (1,0
 |       |       |       |       |       |       |       |       |       |       |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   >   |   >   |   v   |   *   |   >   |   >   |   >   |   >   |   >   |   v   |
-|   >   |   >   |   >   |   >   |   ^   |   *   |   >   |   >   |   >   |   >   |
-|   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |
+|   >   |   >   |   >   |   >   |   ^   |   *   |   >   |   >   |   >   |   v   |
+|   >   |   >   |   >   |   >   |   >   |   >   |   ^   |   *   |   >   |   >   |
 |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   ^   |
 
 
@@ -629,7 +629,7 @@ The code of the following implementation can be found at: *scala.u09.task2.TryEn
 
 First of all we extended the implementation of the `ExtendedQMatrix` by adding the concept of `Enemy` that is simply a `Node`
 
-Then we designed a pattern for the enemy patrolling that consist in a square 3x3:
+Then we designed a pattern for the enemy patrolling that consist in a square 4x4:
 
 ```
 var patrolPattern: LazyList[Action] = LazyList.continually(List(LEFT, LEFT, LEFT, UP, UP, UP, RIGHT, RIGHT, RIGHT, DOWN, DOWN, DOWN)).flatten
@@ -674,3 +674,25 @@ So we obtain the following output, which use the following symbols:
 |   .   |   v   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |   >   |
 |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
 |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+
+We can also try to change the size of the patrolled area to a square 3x3 and translate the position of the enemy:
+
+|       |       |       |       |       |       |       |       |       |       |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   @   |   @   |   @   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   @   |   .   |   @   |   .   |   .   |
+|   .   |   >   |   >   |   >   |   .   |   @   |   @   |   @   |   .   |   ^   |
+|   .   |   .   |   .   |   v   |   >   |   .   |   .   |   .   |   .   |   ^   |
+|   .   |   .   |   .   |   .   |   v   |   >   |   >   |   >   |   >   |   >   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+|   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |   .   |
+
+
+## Conclusions
+
+In all the scenarios the learning is completed with acceptable results.
+By modifying the parameters (gamma, alpha and epsilon) some small improvements can be reached.
+The obstacles and the enemy behaviour are correctly handled by the agent, but in the items scenario some imprecision are still present. 

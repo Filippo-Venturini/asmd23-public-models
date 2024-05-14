@@ -36,7 +36,7 @@ object ExtendedQMatrix:
     var resetMap: ResetFunction = () => ()
     var actualEnemyPosition: Enemy = enemy.orNull
     var enemyPositions: List[Enemy] = List.empty
-    val squarePattern: LazyList[Action] = LazyList.continually(List(LEFT, LEFT, LEFT, UP, UP, UP, RIGHT, RIGHT, RIGHT, DOWN, DOWN, DOWN)).flatten
+    val squarePattern: LazyList[Action] = LazyList.continually(List(LEFT, LEFT, UP, UP, RIGHT, RIGHT, DOWN, DOWN)).flatten
     val randomPattern: LazyList[Action] = LazyList(Move.values.toList(util.Random.nextInt(Move.values.length)))
     var patrolPattern: LazyList[Action] = squarePattern
 
@@ -73,7 +73,7 @@ object ExtendedQMatrix:
         enemyPositions = enemyPositions :+ actualEnemyPosition
         actualEnemyPosition = move(actualEnemyPosition, getPatrolAction)
       }
-      
+
       // computes rewards, and possibly a jump
       (reward.apply((s, a)), jumps.orElse[(Node, Move), Node](_ => n2)(s, a))
 

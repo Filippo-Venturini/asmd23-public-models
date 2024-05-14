@@ -13,7 +13,7 @@ object TryEnemyQLearningMatrix extends App:
     jumps = { PartialFunction.empty },
     obstacles = Set.empty,
     itemsToCollect = Set.empty,
-    enemy = Some(5, 5),
+    enemy = Some(7, 4),
     gamma = 0.9, //Future reward importance
     alpha = 0.5, //Past knowledge importance
     epsilon = 0.8, //Exploration factor
