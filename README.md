@@ -508,7 +508,7 @@ By using half of the default episodes we obtain less imprecision, but still not 
 
 Of course, since with **10000 episodes** we already obtained the best policy, by increasing more the number of episodes we'll not gain any other advantages but just a slower learning phase.
 
-## Grid size
+### Grid size
 
 By increasing the grid size for example to a 10x10 grid, the policy learned lack of precision in the right part of the grid which is the farthest from the jumps:
 
@@ -562,7 +562,7 @@ The goal is achieved through the following steps:
 
 - At that point we introduce a new parameter that holds the positions of the obstacles and we simply assign a negative reward when the agent goes in an obstacle's cell.
 
-The best policy learned avoid correctly the obstacles, the agent start from (1,0) and try to go to (9,1), the obstacles are annotated with `*`:
+The best policy learned avoid correctly the obstacles, the agent start from (1,0) and try to go to (9,2), the obstacles are annotated with `*`:
 
 |       |       |       |       |       |       |       |       |       |       |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
