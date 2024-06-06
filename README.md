@@ -13,7 +13,7 @@ Of course the lenght of the paths examinated must be big enough for assume that 
 
 ### Mutual exclusion
 
-**Def:** In all the possible path of a given length there must not be one token in Reading and one token in Writing or two or more token in Writing.
+**Def:** In all the possible path of a given length there must not be a configuration of token that is inside multiple critical places at the same time.
 
 ```
 def isMutuallyExclusive(initialState: Marking[P], depth: Int, criticalStates: MSet[P]*): Boolean =
