@@ -125,10 +125,10 @@ MSet(*(Idle, Red)) ~~> MSet(*(ChooseAction, Red)),
 
 This means that the transition goes from **Idle** place to **ChooseActionPlace**, accept only red tokens and the token keep being red. For change the color of the token is enough to change the color of the second *.
 
-For demonstrate the correct behaviour we can print all the possible path with depth 5, in a PetriNet that has Red transitions only in the red branch and if we use just one red token we obtain the following path in which it keeps just reading:
+For demonstrate the correct behaviour we can build a petri net that has a red reading branch and a black writing branch and each branch switch the color of the token at the end of it. So printing all the possible path of length 9 with a red token we obdain an oscillatory behaviour of the token that each "turn" switch branch.
 
 ```
-List({*(HasPermission,Black)|*(Idle,Red)}, {*(HasPermission,Black)|*(ChooseAction,Red)}, {*(HasPermission,Black)|*(ReadyToRead,Red)}, {*(HasPermission,Black)|*(Reading,Red)}, {*(HasPermission,Black)|*(Idle,Red)})
+List({*(Idle,Red)|*(HasPermission,Black)}, {*(HasPermission,Black)|*(ChooseAction,Red)}, {*(HasPermission,Black)|*(ReadyToRead,Red)}, {*(Reading,Red)|*(HasPermission,Black)}, {*(HasPermission,Black)|*(Idle,Black)}, {*(ChooseAction,Black)|*(HasPermission,Black)}, {*(ReadyToWrite,Black)|*(HasPermission,Black)}, {*(Writing,Black)}, {*(Idle,Red)|*(HasPermission,Black)})
 ```
 
 # Lab 07 - Stochastic Modelling
