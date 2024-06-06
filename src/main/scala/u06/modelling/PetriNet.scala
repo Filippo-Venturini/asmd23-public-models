@@ -26,7 +26,7 @@ object PetriNet:
       (for
         p <- pn.toSystem.paths(initialState, depth)
         s <- p
-      yield criticalStates.forall(criticalPlaces => s.diff(criticalPlaces).size != s.size - 2)).reduce(_ && _)
+      yield criticalStates.forall(criticalPlaces => s.diff(criticalPlaces).size != s.size - criticalPlaces.size)).reduce(_ && _)
 
     def isReachable(initialState: Marking[P], depth: Int): Boolean =
       (for
